@@ -9,8 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-//new comment to test git
-//comment 2
+//new comment to test git 
 public class try2 extends Application{
 	 Button newGame,existingGame,exit;
 	 Scene startMenu,startNewGame,savedGames;
