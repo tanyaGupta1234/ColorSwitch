@@ -4,15 +4,10 @@ public class Player extends GameComponent {
     private double speed;
 
 
-    public Player(){
+    public Player(double y){
+        super(y);
         speed=0;
     }
-
-    // Vector addition (velocity) in y direction
-    public void addToSpeed(double v){
-        this.speed+=v;
-    }
-
 
 
 }

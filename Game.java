@@ -1,14 +1,23 @@
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.animation.Interpolator;
+import javafx.animation.RotateTransition;
 import javafx.application.Application;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
@@ -65,14 +74,14 @@ public class Game extends Application {
                     }
                 }
         );
-        Player ball=new Player();
+        Player ball=new Player(0);
 
         // Setting ball Image in game
         Circle ballImage=new Circle();
         ballImage.setCenterX(300.0f);
         ballImage.setCenterY(500.0f);
         ballImage.setRadius(25.0f);
-        ballImage.setFill(Color.RED);
+        ballImage.setFill(Color.YELLOW);
         root.getChildren().add(ballImage);
 
         ball.setPosition(500.0f);   // setting Y position in Player class
@@ -96,8 +105,30 @@ public class Game extends Application {
         };
 
         gameloop.start();
-        //ball.setImage("C:\\Users\\shell\\IdeaProjects\\colorSwitcj\\Images\\ball.png");
-        //ball.render(context);
+
+
+
+
+        //TODO: to create arraylist of Obstacle and add obstacle1 to it
+
+        // Creating obstacle1 and setting its position
+        ImageView iv = new ImageView();
+        Obstacle obstacle1=new Obstacle(200);
+        obstacle1.setImage("file:Images/obstacle1.png");
+        iv.setImage(obstacle1.getImage());
+        iv.setX(50);
+        iv.setY(200);
+        root.getChildren().add(iv);
+
+        // Obstacle Animation
+        RotateTransition rt = new RotateTransition(Duration.millis(3000), iv);
+        rt.setByAngle(360);
+        rt.setCycleCount(Animation.INDEFINITE);
+        rt.setInterpolator(Interpolator.LINEAR);
+        rt.play();
+
+
+
         mainStage.show();
     }
 
