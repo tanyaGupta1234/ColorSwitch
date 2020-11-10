@@ -59,12 +59,12 @@ public class Game extends Application {
 
 
 
-       mainScene.setOnKeyPressed(key->{
-           KeyCode keyCode=key.getCode();
-           if(keyCode.equals(keyCode.ENTER)){
-               ENTER_pressed=true;
-           }
-        }
+        mainScene.setOnKeyPressed(key->{
+                    KeyCode keyCode=key.getCode();
+                    if(keyCode.equals(keyCode.ENTER)){
+                        ENTER_pressed=true;
+                    }
+                }
         );
 
         mainScene.setOnKeyReleased(key->{
