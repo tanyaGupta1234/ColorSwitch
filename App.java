@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.util.*;
 /*
- * This class is the APP class and has all the main menu display methods
+ * This class is the App class and has all the main menu display methods, list of saved games
  */
 public class App
 {
@@ -38,14 +38,14 @@ public void  bNewGame()
 {
 	VBox newGameLayout = new VBox(20);
 	Label newG=new Label("NEW GAME!!!");Button pauseB=new Button("pause");
-	pauseB.setOnAction(e->display());
+	pauseB.setOnAction(e->pauseWindow());
 	newGameLayout.getChildren().addAll(newG,pauseB);
 	Scene startNewGame=new Scene(newGameLayout,300,250);
 	stage.setScene(startNewGame);
 	Game g=new Game(stage);
 	try {
 		
-	//g.displayGameWindow();
+	g.displayGameWindow();
 		} 
 		catch(Exception e) {System.out.println("exceptionnnnnn");}
 	
@@ -79,7 +79,7 @@ public void bStartMenu()
     exit.setOnAction(e->{stage.close();}); 
 }
 
-public static void display()
+public static void pauseWindow()
 {
 	Stage window=new Stage();
 	window.initModality(Modality.APPLICATION_MODAL);

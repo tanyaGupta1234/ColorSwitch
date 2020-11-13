@@ -28,6 +28,9 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.util.*;
 //public class Game extends Application {
+/*
+ * Game class, has the game GUI
+ */
 public class Game
 {
 	Stage stage;
