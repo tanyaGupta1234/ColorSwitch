@@ -3,6 +3,7 @@ import javafx.animation.AnimationTimer;
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -14,14 +15,19 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
 
@@ -42,7 +48,17 @@ public class Game
 	public void displayGameWindow() throws FileNotFoundException
 	{
 		
-		BorderPane root=new BorderPane();  
+		BorderPane root=new BorderPane(); 
+		HBox hbox = new HBox(); hbox.setSpacing(50); 
+		BackgroundFill background_fill = new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		hbox.setBackground(background); 
+		Button pause=new Button("Pause");
+		pause.setOnAction(e->pauseWindow());
+		Label score=new Label("Score : 0");score.setTextFill(Color.web("#0076a3"));
+		score.setFont(new Font("Arial", 15));
+		hbox.getChildren().addAll(pause,score);
+		root.setTop(hbox);
         Scene mainScene=new Scene(root,600,600);
         stage.setScene(mainScene);
         stage.show();
@@ -59,7 +75,7 @@ public class Game
 
         mainScene.setOnKeyPressed(key->{
                     KeyCode keyCode=key.getCode();
-                    if(keyCode.equals(keyCode.ENTER)){
+                    if(keyCode.equals(keyCode.CONTROL)){
                         ENTER_pressed=true;
                     }
                 }
@@ -68,7 +84,7 @@ public class Game
 
         mainScene.setOnKeyReleased(key->{
                     KeyCode keyCode=key.getCode();
-                    if(keyCode.equals(keyCode.ENTER)){
+                    if(keyCode.equals(keyCode.CONTROL)){
                         ENTER_pressed=false;
                     }
                 }
@@ -127,6 +143,19 @@ public class Game
         rt.play();
         stage.show();  
 
+	}
+	public static void pauseWindow()
+	{
+		Stage window=new Stage();
+		window.initModality(Modality.APPLICATION_MODAL);
+		window.setTitle("Pause");
+		window.setMinWidth(250);
+		Button b=new Button("Resume");
+		b.setOnAction(e->window.close());
+		VBox pauseLayout=new VBox(); pauseLayout.getChildren().add(b);
+		window.setScene(new Scene(pauseLayout,100,100));
+		window.showAndWait();
+		
 	}
 	
 	

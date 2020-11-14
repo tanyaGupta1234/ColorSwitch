@@ -37,9 +37,8 @@ public class App
 public void  bNewGame() 
 {
 	VBox newGameLayout = new VBox(20);
-	Label newG=new Label("NEW GAME!!!");Button pauseB=new Button("pause");
-	pauseB.setOnAction(e->pauseWindow());
-	newGameLayout.getChildren().addAll(newG,pauseB);
+	Label newG=new Label("NEW GAME!!!");
+	newGameLayout.getChildren().addAll(newG);
 	Scene startNewGame=new Scene(newGameLayout,300,250);
 	stage.setScene(startNewGame);
 	Game g=new Game(stage);
@@ -79,19 +78,7 @@ public void bStartMenu()
     exit.setOnAction(e->{stage.close();}); 
 }
 
-public static void pauseWindow()
-{
-	Stage window=new Stage();
-	window.initModality(Modality.APPLICATION_MODAL);
-	window.setTitle("Pause");
-	window.setMinWidth(250);
-	Button b=new Button("Resume");
-	b.setOnAction(e->window.close());
-	VBox pauseLayout=new VBox(); pauseLayout.getChildren().add(b);
-	window.setScene(new Scene(pauseLayout,100,100));
-	window.showAndWait();
-	
-}
+
 
 }
 
