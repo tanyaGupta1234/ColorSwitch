@@ -49,20 +49,19 @@ public class Game
 	{
 		
 		BorderPane root=new BorderPane(); 
-		HBox hbox = new HBox(); hbox.setSpacing(50); 
+		HBox hbox = new HBox(); hbox.setSpacing(100); 
 		BackgroundFill background_fill = new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY); 
 		Background background = new Background(background_fill);
 		hbox.setBackground(background); 
-		Button pause=new Button("Pause");
+		Button pause=new Button("Pause"); Button saveState=new Button("Save Game State");
 		pause.setOnAction(e->pauseWindow());
+		saveState.setOnAction(e->App.bStartMenu());
 		Label score=new Label("Score : 0");score.setTextFill(Color.web("#0076a3"));
 		score.setFont(new Font("Arial", 15));
-		hbox.getChildren().addAll(pause,score);
+		hbox.getChildren().addAll(pause,saveState,score);
 		root.setTop(hbox);
         Scene mainScene=new Scene(root,600,600);
         stage.setScene(mainScene);
-        stage.show();
-        System.out.println("hereee");
         Canvas canvas=new Canvas(600,600);
         GraphicsContext context=canvas.getGraphicsContext2D();  // Performs all drawing operations on canvas
 

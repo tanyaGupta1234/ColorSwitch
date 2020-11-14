@@ -22,19 +22,19 @@ import java.util.*;
  */
 public class App
 {
-	Stage stage;
+	static Stage stage;
 	List<Game> savedGames=new ArrayList<>();
-	ChoiceBox<String> choicebox=new ChoiceBox<>();
+	static ChoiceBox<String> choicebox=new ChoiceBox<>();
 	public App(Stage s)
 	{
-		this.stage=s;
+		stage=s;
 	}
 	void addSavedGame(Game g)
 	{
 		savedGames.add(g);
 		choicebox.getItems().add("Game: "+(savedGames.size()+1));
 	}
-public void  bNewGame() 
+public static void  bNewGame() 
 {
 	VBox newGameLayout = new VBox(20);
 	Label newG=new Label("NEW GAME!!!");
@@ -49,7 +49,7 @@ public void  bNewGame()
 		catch(Exception e) {System.out.println("exceptionnnnnn");}
 	
 }
-public void bSavedGames() 
+public static void bSavedGames() 
 {
 	 Button goBack=new Button("go back"); 
 	 Label savedG=new Label("SAVED Games!!!");
@@ -61,7 +61,7 @@ public void bSavedGames()
 	 stage.setScene(savedGames);
 	 goBack.setOnAction(e->{bStartMenu();});
 }
-public void bStartMenu()
+public static void bStartMenu()
 {
 	//Parent startMenuLayout =FXMLLoader.load(getClass().getResource("testfxml.fxml")); 
 	stage.setTitle("Color Switch!");
