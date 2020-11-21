@@ -41,6 +41,8 @@ public class Game
 {
 	Stage stage;
 	boolean ENTER_pressed=false;
+	boolean paused=false;
+	int Score=0;
 	public Game(Stage s)
 	{
 		this.stage=s;
@@ -49,16 +51,18 @@ public class Game
 	{
 		
 		BorderPane root=new BorderPane(); 
-		HBox hbox = new HBox(); hbox.setSpacing(100); 
+		HBox hbox = new HBox(); hbox.setSpacing(20); 
 		BackgroundFill background_fill = new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY); 
 		Background background = new Background(background_fill);
 		hbox.setBackground(background); 
 		Button pause=new Button("Pause"); Button saveState=new Button("Save Game State");
-		pause.setOnAction(e->pauseWindow());
+		Label ycor=new Label("");ycor.setTextFill(Color.web("#0076a3"));
+		ycor.setFont(new Font("Arial", 15));
+		
 		saveState.setOnAction(e->App.bStartMenu());
 		Label score=new Label("Score : 0");score.setTextFill(Color.web("#0076a3"));
 		score.setFont(new Font("Arial", 15));
-		hbox.getChildren().addAll(pause,saveState,score);
+		hbox.getChildren().addAll(pause,saveState,score,ycor);
 		root.setTop(hbox);
         Scene mainScene=new Scene(root,600,600);
         stage.setScene(mainScene);
@@ -102,27 +106,7 @@ public class Game
 
 
         // Making ball move according to key input
-        AnimationTimer gameloop=new AnimationTimer() {
-            @Override
-            public void handle(long now) {     // this method called every 1/60th of second
-                double speed=0;
-                if(ENTER_pressed==true){
-                    speed=-150;                // want 150 pixels per second move up
-
-                }
-                else if(ball.getPositionY()<600-25){
-                    speed=75;
-                }
-                ball.addToPosition(speed/60.0);
-                ballImage.setCenterY(ball.getPositionY());
-            }
-        };
-
-        gameloop.start();
-
-
-
-
+        
         //TODO: to create arraylist of Obstacle and add obstacle1 to it
 
         // Creating obstacle1 and setting its position
@@ -135,22 +119,70 @@ public class Game
         root.getChildren().add(iv);
 
         // Obstacle Animation
-        RotateTransition rt = new RotateTransition(Duration.millis(3000), iv);
+        RotateTransition rt = new RotateTransition(Duration.millis(4000), iv);
         rt.setByAngle(360);
         rt.setCycleCount(Animation.INDEFINITE);
         rt.setInterpolator(Interpolator.LINEAR);
-        rt.play();
+        rt.play();  
+        
+       
+        //star
+        
+        ImageView ivStar = new ImageView();
+        Star star1=new Star(320);
+        star1.setImage("Images/star.png");
+        ivStar.setImage(star1.getImage());
+        ivStar.setX(275);
+        ivStar.setY(320);ivStar.setFitHeight(50);
+        ivStar.setFitWidth(50);
+        root.getChildren().add(ivStar);
+        AnimationTimer gameloop=new AnimationTimer() {
+            @Override
+            public void handle(long now) {     // this method called every 1/60th of second
+                double speed=0;
+                if(ENTER_pressed==true){
+                    speed=-150;  // want 150 pixels per second move up
+                    
+
+                }
+                else if(ball.getPositionY()<600-25){
+                    speed=75;
+                    System.out.println(ball.getPositionY());
+                   // if(star1.getPositionY()-ball.getPositionY()<10 && (star1.getPositionY()>ball.getPositionY()))
+                       if(Math.abs(ball.getPositionY()-star1.getPositionY())<10 && star1.getPositionY()<1000)
+                    	{
+                    	  
+                    	ball.score++;
+                    	root.getChildren().remove(ivStar);
+                    	System.out.println(ball.getPositionY()+"here"+star1.getPositionY());
+                    	star1.setPosition(10000000);
+                    	}
+                    
+                }
+                ball.addToPosition(speed/60.0);
+                ballImage.setCenterY(ball.getPositionY());
+                ycor.setText(""+ball.getPositionY());
+                score.setText("Score: "+ball.score);
+            }
+        };
+        
+
+        gameloop.start();
+
+        
+        
+        pause.setOnAction(e->{paused =true;gameloop.stop();pauseWindow(gameloop);});
         stage.show();  
 
 	}
-	public static void pauseWindow()
+	public void pauseWindow(AnimationTimer gameloop)
 	{
 		Stage window=new Stage();
 		window.initModality(Modality.APPLICATION_MODAL);
 		window.setTitle("Pause");
 		window.setMinWidth(250);
 		Button b=new Button("Resume");
-		b.setOnAction(e->window.close());
+		b.setOnAction(e->{ gameloop.start(); window.close();});
 		VBox pauseLayout=new VBox(); pauseLayout.getChildren().add(b);
 		window.setScene(new Scene(pauseLayout,100,100));
 		window.showAndWait();
