@@ -147,14 +147,14 @@ public class Game
                 }
                 else if(ball.getPositionY()<600-25){
                     speed=75;
-                    System.out.println(ball.getPositionY());
+                   // System.out.println(ball.getPositionY());
                    // if(star1.getPositionY()-ball.getPositionY()<10 && (star1.getPositionY()>ball.getPositionY()))
                        if(Math.abs(ball.getPositionY()-star1.getPositionY())<10 && star1.getPositionY()<1000)
                     	{
                     	  
                     	ball.score++;
                     	root.getChildren().remove(ivStar);
-                    	System.out.println(ball.getPositionY()+"here"+star1.getPositionY());
+                    	//System.out.println(ball.getPositionY()+"here"+star1.getPositionY());
                     	star1.setPosition(10000000);
                     	}
                     
