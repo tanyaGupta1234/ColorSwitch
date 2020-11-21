@@ -6,6 +6,8 @@ import javafx.application.Application;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
@@ -24,43 +26,60 @@ import java.util.Iterator;
 import static javafx.application.Application.launch;
 
 
+
+
+//NOTES
+// Obstacle outer radius 90.5px
+// Obstacle inner radius 63.5 px
+// width = 27
 public class Game1 extends Application {
 
     private HashMap<KeyCode, Boolean> keys = new HashMap<KeyCode, Boolean>();
+    private HashMap<String,Integer> colorCode=new HashMap<>();
 
 
-
-
+    private double or=90.5;
+    private double ir=63.5;
+    private double thickness=or-ir;
+    private double xball=300;
     private Pane appRoot = new Pane();
     private Pane gameRoot = new Pane();
     private Pane uiRoot = new Pane();
+
+    private int ballColor=3;
+    private int obcolor=1;
+    private long timeStart;
+    private double ballRadius=15;
+
+    //TODO: List of obstacles
     private  Obstacle obstacle1;
     private  Obstacle obstacle2;
     private  Obstacle obstacle3;
     private boolean ENTER_pressed=false;
-
+    ImageView iv;
     private Circle ballImage;
 
     private void initContent() throws FileNotFoundException {
-        Rectangle bg = new Rectangle(600, 600);
+
+        Rectangle bg = new Rectangle(600, 900);
         ballImage=new Circle();
-        ballImage.setRadius(25.0f);
-        ballImage.setTranslateY(500.0f);
-        ballImage.setTranslateX(300.0f);
+        ballImage.setRadius(ballRadius);
+        ballImage.setTranslateY(800.0f);
+        ballImage.setTranslateX(xball);
 
         ballImage.setFill(Color.YELLOW);
         gameRoot.getChildren().add(ballImage);
 
         //TODO: for level add add all the game components
-        obstacle1=new Obstacle(200);
+        obstacle1=new Obstacle(300);
         obstacle2=new Obstacle(-200);
         obstacle3=new Obstacle(-400);
 
         // Creating obstacle1 and setting its position
-        ImageView iv = new ImageView();
-        obstacle1.setImage("Images/obstacle1.png");
+        iv = new ImageView();
+        obstacle1.setImage("file:Images/obstacle11.png");
         iv.setImage(obstacle1.getImage());
-        iv.setX(50);
+        iv.setX(xball-or);
         iv.setY(200);
         gameRoot.getChildren().add(iv);
 
@@ -79,13 +98,27 @@ public class Game1 extends Application {
         gameRoot.getChildren().add(iv3);
 
         // Obstacle Animation
-        RotateTransition rt = new RotateTransition(Duration.millis(3000), iv);
+        RotateTransition rt = new RotateTransition(Duration.millis(4000), iv);  // in 4s 1 rotation done
         rt.setByAngle(360);
         rt.setCycleCount(Animation.INDEFINITE);
         rt.setInterpolator(Interpolator.LINEAR);
         rt.play();
+        timeStart = System.currentTimeMillis();
+
+        RotateTransition rt1 = new RotateTransition(Duration.millis(3000), iv2);
+        rt1.setByAngle(360);
+        rt1.setCycleCount(Animation.INDEFINITE);
+        rt1.setInterpolator(Interpolator.LINEAR);
+        rt1.play();
+
+        // Assigning color code  (not needed for now)
+        colorCode.put("purple",4);
+        colorCode.put("blue",2);
+        colorCode.put("yellow",3);
+        colorCode.put("pink",1);
 
 
+        // Moving screen with ball (scrolling property)
         ballImage.translateYProperty().addListener((observable, oldValue, newValue) -> {
             int offset=newValue.intValue();
             System.out.println(offset);
@@ -100,7 +133,7 @@ public class Game1 extends Application {
 
     private void update() {
 
-
+            // Changing position of ball
             double speed=0;
             if(ENTER_pressed==true){
                 speed=-150;                // want 150 pixels per second move up
@@ -111,6 +144,40 @@ public class Game1 extends Application {
             }
             ballImage.setTranslateY(ballImage.getTranslateY()+speed/60.0);
             //ballImage.setCenterY(ballImage.getTranslateY());
+
+            // Passing of ball through obstacles
+            long elapsedTime=System.currentTimeMillis()-timeStart;
+            long r=elapsedTime/1000;    // number of quarter rotations completed
+            int presentBottomColor=1+(int)(r%4);
+            int presentTopColor=1+(presentBottomColor+1)%4;
+            double ballTopPosition=ballImage.getTranslateY()-ballRadius;
+            double ballBottomPosition=ballImage.getTranslateY()+ballRadius;
+
+            // if ball is in top part of obstacle
+
+            if((ballBottomPosition>=iv.getY() &&ballBottomPosition<=iv.getY()+thickness) ||
+                    (ballTopPosition>=iv.getY() &&ballTopPosition<=iv.getY()+thickness)){
+                if(presentTopColor!=ballColor){
+                    System.out.println("obstacle touched");
+                }
+                else{
+                    System.out.println("passing");
+                }
+            }
+
+            // if ball is in bottom part of obstacle
+
+        if((ballBottomPosition>=iv.getY()+2*or-thickness &&ballBottomPosition<=iv.getY()+2*or) ||
+                (ballTopPosition>=iv.getY()+2*or-thickness &&ballTopPosition<=iv.getY()+2*or)){
+            if(presentBottomColor!=ballColor){
+                System.out.println("obstacle touched");
+            }
+            else{
+                System.out.println("passing");
+            }
+        }
+
+
 
     }
 
