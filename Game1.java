@@ -71,7 +71,9 @@ public class Game1 {
     private Circle ballImage;
     private Player ball;
     private Label score;
-
+    Button pause;
+    boolean paused=false;
+    Button saveState;
     private void initContent() throws FileNotFoundException {
 
         // Top menu in game
@@ -80,7 +82,7 @@ public class Game1 {
         BackgroundFill background_fill = new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY);
         Background background = new Background(background_fill);
         hbox.setBackground(background);
-        Button pause=new Button("Pause"); Button saveState=new Button("Save Game State");
+        pause=new Button("Pause"); saveState=new Button("Save Game State");
         javafx.scene.control.Label ycor=new javafx.scene.control.Label("");ycor.setTextFill(Color.web("#0076a3"));
         ycor.setFont(new javafx.scene.text.Font("Arial", 15));
 
@@ -171,6 +173,8 @@ public class Game1 {
         });
 
         appRoot.getChildren().addAll(bg, gameRoot, uiRoot);
+
+
     }
 
     private void update() {
@@ -268,6 +272,7 @@ public class Game1 {
         );
         stage.setTitle("Color Switch!");
         stage.setScene(scene);
+
         stage.show();
 
         AnimationTimer timer = new AnimationTimer() {
@@ -279,6 +284,8 @@ public class Game1 {
 
             }
         };
+        pause.setOnAction(e->{paused =true;timer.stop();pauseWindow(timer);});
+        saveState.setOnAction(e->App.bStartMenu());
         timer.start();
     }
 
