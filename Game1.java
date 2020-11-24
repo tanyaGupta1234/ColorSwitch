@@ -11,6 +11,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
@@ -74,6 +75,7 @@ public class Game1 {
     Button pause;
     boolean paused=false;
     Button saveState;
+    ImageView colorsw;
     private void initContent() throws FileNotFoundException {
 
         // Top menu in game
@@ -114,6 +116,18 @@ public class Game1 {
         ivStar.setY(starPos);
         ivStar.setFitWidth(50);
         gameRoot.getChildren().add(ivStar);
+
+        // Color switcher
+        colorsw=new ImageView();
+        Image cs=new Image("file:Images/colorswitcher.png");
+        colorsw.setImage(cs);
+        colorsw.setX(300-7.5);
+        colorsw.setFitHeight(30);
+        colorsw.setY(300-2*or-25);
+        colorsw.setFitWidth(30);
+        gameRoot.getChildren().add(colorsw);
+
+        // Obstacles
         //TODO: for level add add all the game components
         obstacle1=new Obstacle(300);
         obstacle2=new Obstacle(-200);
