@@ -3,17 +3,22 @@ import javafx.animation.AnimationTimer;
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -32,8 +37,14 @@ import static javafx.application.Application.launch;
 // Obstacle outer radius 90.5px
 // Obstacle inner radius 63.5 px
 // width = 27
-public class Game1 extends Application {
+// start height 149px
+public class Game1 {
 
+    public Game1(Stage s)
+    {
+        this.stage=s;
+    }
+    Stage stage;
     private HashMap<KeyCode, Boolean> keys = new HashMap<KeyCode, Boolean>();
     private HashMap<String,Integer> colorCode=new HashMap<>();
 
@@ -45,12 +56,12 @@ public class Game1 extends Application {
     private Pane appRoot = new Pane();
     private Pane gameRoot = new Pane();
     private Pane uiRoot = new Pane();
-
+    private double starPos=300-or+50;   //star height
     private int ballColor=3;
     private int obcolor=1;
     private long timeStart;
     private double ballRadius=15;
-
+    ImageView ivStar;
     //TODO: List of obstacles
     private  Obstacle obstacle1;
     private  Obstacle obstacle2;
@@ -58,8 +69,28 @@ public class Game1 extends Application {
     private boolean ENTER_pressed=false;
     ImageView iv;
     private Circle ballImage;
+    private Player ball;
+    private Label score;
 
     private void initContent() throws FileNotFoundException {
+
+        // Top menu in game
+        ball=new Player(900);   //TODO: initialize correct ball position
+        HBox hbox = new HBox(); hbox.setSpacing(20);
+        BackgroundFill background_fill = new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY);
+        Background background = new Background(background_fill);
+        hbox.setBackground(background);
+        Button pause=new Button("Pause"); Button saveState=new Button("Save Game State");
+        javafx.scene.control.Label ycor=new javafx.scene.control.Label("");ycor.setTextFill(Color.web("#0076a3"));
+        ycor.setFont(new javafx.scene.text.Font("Arial", 15));
+
+        saveState.setOnAction(e->App.bStartMenu());
+        score=new Label("Score : 0");score.setTextFill(Color.web("#0076a3"));
+        score.setFont(new Font("Arial", 15));
+        hbox.getChildren().addAll(pause,saveState,score,ycor);
+        hbox.setLayoutY(0);
+        uiRoot.getChildren().add(hbox);
+
 
         Rectangle bg = new Rectangle(600, 900);
         ballImage=new Circle();
@@ -70,6 +101,17 @@ public class Game1 extends Application {
         ballImage.setFill(Color.YELLOW);
         gameRoot.getChildren().add(ballImage);
 
+        //star
+
+        ivStar = new ImageView();
+        Star star1=new Star(320);
+        star1.setImage("Images/star.jpg");
+        ivStar.setImage(star1.getImage());
+        ivStar.setX(275);
+        ivStar.setFitHeight(50);
+        ivStar.setY(starPos);
+        ivStar.setFitWidth(50);
+        gameRoot.getChildren().add(ivStar);
         //TODO: for level add add all the game components
         obstacle1=new Obstacle(300);
         obstacle2=new Obstacle(-200);
@@ -142,6 +184,13 @@ public class Game1 extends Application {
             else if(ballImage.getTranslateY()<600-25){
                 speed=75;
             }
+            if(ballImage.getTranslateY()>=starPos && ballImage.getTranslateY()<=starPos+50){
+                gameRoot.getChildren().remove(ivStar);
+                ball.score++;
+                score.setText("Score: "+ball.score);
+                starPos=100000;
+
+            }
             ballImage.setTranslateY(ballImage.getTranslateY()+speed/60.0);
             //ballImage.setCenterY(ballImage.getTranslateY());
 
@@ -182,8 +231,23 @@ public class Game1 extends Application {
     }
 
 
+    public void pauseWindow(AnimationTimer gameloop)
+    {
+        Stage window=new Stage();
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setTitle("Pause");
+        window.setMinWidth(250);
+        javafx.scene.control.Button b=new Button("Resume");
+        b.setOnAction(e->{ gameloop.start(); window.close();});
+        VBox pauseLayout=new VBox(); pauseLayout.getChildren().add(b);
+        window.setScene(new Scene(pauseLayout,100,100));
+        window.showAndWait();
 
-    public void start(Stage primaryStage) throws Exception {
+    }
+
+
+
+    public void displayGameWindow() throws FileNotFoundException {
         initContent();
 
         Scene scene = new Scene(appRoot);
@@ -202,9 +266,9 @@ public class Game1 extends Application {
                     }
                 }
         );
-        primaryStage.setTitle("Tutorial 14 Platformer");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        stage.setTitle("Color Switch!");
+        stage.setScene(scene);
+        stage.show();
 
         AnimationTimer timer = new AnimationTimer() {
             @Override

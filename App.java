@@ -41,7 +41,7 @@ public static void  bNewGame()
 	newGameLayout.getChildren().addAll(newG);
 	Scene startNewGame=new Scene(newGameLayout,300,250);
 	stage.setScene(startNewGame);
-	Game g=new Game(stage);
+	Game1 g=new Game1(stage);
 	try {
 		
 	g.displayGameWindow();
