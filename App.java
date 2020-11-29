@@ -23,13 +23,13 @@ import java.util.*;
 public class App
 {
 	static Stage stage;
-	List<Game> savedGames=new ArrayList<>();
+	List<Game1> savedGames=new ArrayList<>();
 	static ChoiceBox<String> choicebox=new ChoiceBox<>();
 	public App(Stage s)
 	{
 		stage=s;
 	}
-	void addSavedGame(Game g)
+	void addSavedGame(Game1 g)
 	{
 		savedGames.add(g);
 		choicebox.getItems().add("Game: "+(savedGames.size()+1));
@@ -69,6 +69,28 @@ public static void bSavedGames()
 	 stage.setScene(savedGames);
 	 goBack.setOnAction(e->{bStartMenu();});
 }
+
+public static void loadGame(){
+	try {
+		SaveData data = (SaveData) ResourceManager.load("2.save");
+		VBox newGameLayout = new VBox(20);
+		Label newG=new Label("NEW GAME!!!");
+		newGameLayout.getChildren().addAll(newG);
+		Scene startNewGame=new Scene(newGameLayout,300,250);
+		stage.setScene(startNewGame);
+		Game1 g=new Game1(stage,data);
+		try {
+
+			g.displayGameWindow();
+		}
+		catch(Exception e) {System.out.println("exceptionnnnnn");}
+
+
+	}
+	catch (Exception e) {
+		System.out.println("Couldn't load save data: " + e.getMessage());
+	}
+}
 public static void bStartMenu()
 {
 	//Parent startMenuLayout =FXMLLoader.load(getClass().getResource("testfxml.fxml")); 
@@ -89,8 +111,9 @@ public static void bStartMenu()
     Scene startMenu=new Scene(startMenuLayout,600,600,Color.RED);
     stage.setScene(startMenu);
     newGame.setOnAction(e->{bNewGame();});
-    existingGame.setOnAction(e->{bSavedGames();}); 
-    exit.setOnAction(e->{stage.close();}); 
+    //existingGame.setOnAction(e->{bSavedGames();});
+	existingGame.setOnAction(e->{loadGame();});
+	exit.setOnAction(e->{stage.close();});
 }
 
 

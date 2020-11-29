@@ -39,11 +39,31 @@ import static javafx.application.Application.launch;
 // Obstacle inner radius 63.5 px
 // width = 27
 // start height 149px
+
 public class Game1 {
 
     public Game1(Stage s)
     {
         this.stage=s;
+        ball=new Player(800);
+        ball.score=0;
+        obstacles=new ArrayList<>();
+        stars=new ArrayList<>();
+        ballpos=800;
+        stars.add(new Star(starPos));
+
+        obstacle1=new Obstacle(300);
+        obstacle2=new Obstacle(-200);
+        obstacle3=new Obstacle(-400);
+        obstacles.add(obstacle1); obstacles.add(obstacle2); obstacles.add(obstacle3);
+    }
+    public Game1(Stage s,SaveData data)
+    {
+        this.stage=s;
+        ball.score= data.score;
+        obstacles=data.obstacles;
+        stars= data.stars;
+        ballpos=data.ballpos;
     }
     Stage stage;
     private HashMap<KeyCode, Boolean> keys = new HashMap<KeyCode, Boolean>();
@@ -57,7 +77,7 @@ public class Game1 {
     private Pane appRoot = new Pane();
     private Pane gameRoot = new Pane();
     private Pane uiRoot = new Pane();
-    private double starPos=300-or+50;   //star height
+    private double starPos=300-or+150;   //star height
     private int ballColor=3;
     private int obcolor=1;
     private long timeStart;
@@ -68,7 +88,8 @@ public class Game1 {
     private  Obstacle obstacle2;
     private  Obstacle obstacle3;
     private boolean ENTER_pressed=false;
-    ImageView iv;
+    //ImageView iv;
+    ArrayList<ImageView> ivobstacleImages;
     private Circle ballImage;
     private Player ball;
     private Label score;
@@ -76,10 +97,14 @@ public class Game1 {
     boolean paused=false;
     Button saveState;
     ImageView colorsw;
+    private ArrayList<Obstacle> obstacles;
+    private ArrayList<Star> stars;
+    double ballpos;
+    //private ArrayList<Obstacle> obstacles;
     private void initContent() throws FileNotFoundException {
 
         // Top menu in game
-        ball=new Player(900);   //TODO: initialize correct ball position
+
         HBox hbox = new HBox(); hbox.setSpacing(20);
         BackgroundFill background_fill = new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY);
         Background background = new Background(background_fill);
@@ -99,23 +124,26 @@ public class Game1 {
         Rectangle bg = new Rectangle(600, 900);
         ballImage=new Circle();
         ballImage.setRadius(ballRadius);
-        ballImage.setTranslateY(800.0f);
+        ballImage.setTranslateY(ballpos);
         ballImage.setTranslateX(xball);
 
         ballImage.setFill(Color.YELLOW);
         gameRoot.getChildren().add(ballImage);
 
         //star
+        for(Star star1:stars){
+            ivStar = new ImageView();
+            Image image=new Image("Images/star.jpg");
+            //star1.setImage("Images/star.jpg");
+            ivStar.setImage(image);
+            ivStar.setX(275);
+            ivStar.setFitHeight(50);
+            ivStar.setY(star1.getPositionY());
+            ivStar.setFitWidth(50);
+            gameRoot.getChildren().add(ivStar);
+        }
 
-        ivStar = new ImageView();
-        Star star1=new Star(320);
-        star1.setImage("Images/star.jpg");
-        ivStar.setImage(star1.getImage());
-        ivStar.setX(275);
-        ivStar.setFitHeight(50);
-        ivStar.setY(starPos);
-        ivStar.setFitWidth(50);
-        gameRoot.getChildren().add(ivStar);
+
 
         // Color switcher
         colorsw=new ImageView();
@@ -127,53 +155,27 @@ public class Game1 {
         colorsw.setFitWidth(30);
         gameRoot.getChildren().add(colorsw);
 
-        // Obstacles
-        //TODO: for level add add all the game components
-        obstacle1=new Obstacle(300);
-        obstacle2=new Obstacle(-200);
-        obstacle3=new Obstacle(-400);
 
         // Creating obstacle1 and setting its position
-        iv = new ImageView();
-        obstacle1.setImage("file:Images/obstacle11.png");
-        iv.setImage(obstacle1.getImage());
-        iv.setX(xball-or);
-        iv.setY(200);
-        gameRoot.getChildren().add(iv);
-
-        ImageView iv2 = new ImageView();
-        obstacle2.setImage("Images/obstacle1.png");
-        iv2.setImage(obstacle2.getImage());
-        iv2.setX(50);
-        iv2.setY(-200);
-        gameRoot.getChildren().add(iv2);
-
-        ImageView iv3 = new ImageView();
-        obstacle3.setImage("Images/obstacle1.png");
-        iv3.setImage(obstacle2.getImage());
-        iv3.setX(50);
-        iv3.setY(-400);
-        gameRoot.getChildren().add(iv3);
-
-        // Obstacle Animation
-        RotateTransition rt = new RotateTransition(Duration.millis(4000), iv);  // in 4s 1 rotation done
-        rt.setByAngle(360);
-        rt.setCycleCount(Animation.INDEFINITE);
-        rt.setInterpolator(Interpolator.LINEAR);
-        rt.play();
+        ivobstacleImages=new ArrayList<>();
         timeStart = System.currentTimeMillis();
+        for(Obstacle obstacle1:obstacles){
 
-        RotateTransition rt1 = new RotateTransition(Duration.millis(3000), iv2);
-        rt1.setByAngle(360);
-        rt1.setCycleCount(Animation.INDEFINITE);
-        rt1.setInterpolator(Interpolator.LINEAR);
-        rt1.play();
+            ImageView iv = new ImageView();
+            Image image=new Image("file:Images/obstacle11.png");
+            //obstacle1.setImage("file:Images/obstacle11.png");
+            iv.setImage(image);
+            iv.setX(xball-or);
+            iv.setY(obstacle1.getPositionY());
+            gameRoot.getChildren().add(iv);
+            ivobstacleImages.add(iv);
+            RotateTransition rt = new RotateTransition(Duration.millis(4000), iv);  // in 4s 1 rotation done
+            rt.setByAngle(360);
+            rt.setCycleCount(Animation.INDEFINITE);
+            rt.setInterpolator(Interpolator.LINEAR);
+            rt.play();
 
-        // Assigning color code  (not needed for now)
-        colorCode.put("purple",4);
-        colorCode.put("blue",2);
-        colorCode.put("yellow",3);
-        colorCode.put("pink",1);
+        }
 
 
         // Moving screen with ball (scrolling property)
@@ -221,28 +223,30 @@ public class Game1 {
             double ballBottomPosition=ballImage.getTranslateY()+ballRadius;
 
             // if ball is in top part of obstacle
-
-            if((ballBottomPosition>=iv.getY() &&ballBottomPosition<=iv.getY()+thickness) ||
-                    (ballTopPosition>=iv.getY() &&ballTopPosition<=iv.getY()+thickness)){
-                if(presentTopColor!=ballColor){
-                    System.out.println("obstacle touched");
+            for(ImageView iv:ivobstacleImages){
+                if((ballBottomPosition>=iv.getY() &&ballBottomPosition<=iv.getY()+thickness) ||
+                        (ballTopPosition>=iv.getY() &&ballTopPosition<=iv.getY()+thickness)){
+                    if(presentTopColor!=ballColor){
+                        System.out.println("obstacle touched");
+                    }
+                    else{
+                        System.out.println("passing");
+                    }
                 }
-                else{
-                    System.out.println("passing");
+
+                // if ball is in bottom part of obstacle
+
+                if((ballBottomPosition>=iv.getY()+2*or-thickness &&ballBottomPosition<=iv.getY()+2*or) ||
+                        (ballTopPosition>=iv.getY()+2*or-thickness &&ballTopPosition<=iv.getY()+2*or)){
+                    if(presentBottomColor!=ballColor){
+                        System.out.println("obstacle touched");
+                    }
+                    else{
+                        System.out.println("passing");
+                    }
                 }
             }
 
-            // if ball is in bottom part of obstacle
-
-        if((ballBottomPosition>=iv.getY()+2*or-thickness &&ballBottomPosition<=iv.getY()+2*or) ||
-                (ballTopPosition>=iv.getY()+2*or-thickness &&ballTopPosition<=iv.getY()+2*or)){
-            if(presentBottomColor!=ballColor){
-                System.out.println("obstacle touched");
-            }
-            else{
-                System.out.println("passing");
-            }
-        }
 
 
 
@@ -299,8 +303,26 @@ public class Game1 {
             }
         };
         pause.setOnAction(e->{paused =true;timer.stop();pauseWindow(timer);});
-        saveState.setOnAction(e->App.bStartMenu());
+        saveState.setOnAction(e->savingGame());
         timer.start();
+    }
+
+    public void savingGame(){
+
+        SaveData data = new SaveData();
+        data.score = ball.score;
+        data.stars = stars;
+        data.obstacles=obstacles;
+        double pos=ballImage.getTranslateY();
+        data.ballpos=pos;
+        try {
+            ResourceManager.save(data, "2.save");
+
+        }
+        catch (Exception e) {
+            System.out.println("Couldn't save: " + e.getMessage());
+        }
+        App.bStartMenu();
     }
 
     public static void main(String[] args) {
