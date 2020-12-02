@@ -10,13 +10,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.Node;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.Serializable;
 
-public  class GameComponent implements Serializable {
+public  class GameComponent  {
 
 
     private double positionY;
-
+    private Image image;
     public GameComponent(double y){
         positionY=y;
     }
@@ -26,7 +25,17 @@ public  class GameComponent implements Serializable {
 
 
 
+    public void setImage(String filename) throws FileNotFoundException {
+        image=new Image(filename);
 
+    }
+
+    public Image getImage(){
+        return image;
+    }
+    public void render(GraphicsContext context,int x){
+        context.drawImage(image,x,positionY);
+    }
 
     public void addToPosition(double v){
         this.positionY+=v;

@@ -23,13 +23,13 @@ import java.util.*;
 public class App
 {
 	static Stage stage;
-	List<Game1> savedGames=new ArrayList<>();
+	List<Game> savedGames=new ArrayList<>();
 	static ChoiceBox<String> choicebox=new ChoiceBox<>();
 	public App(Stage s)
 	{
 		stage=s;
 	}
-	void addSavedGame(Game1 g)
+	void addSavedGame(Game g)
 	{
 		savedGames.add(g);
 		choicebox.getItems().add("Game: "+(savedGames.size()+1));
@@ -41,7 +41,7 @@ public static void  bNewGame()
 	newGameLayout.getChildren().addAll(newG);
 	Scene startNewGame=new Scene(newGameLayout,300,250);
 	stage.setScene(startNewGame);
-	Game1 g=new Game1(stage);
+	Game g=new Game(stage);
 	try {
 		
 	g.displayGameWindow();
@@ -78,7 +78,9 @@ public static void loadGame(){
 		newGameLayout.getChildren().addAll(newG);
 		Scene startNewGame=new Scene(newGameLayout,300,250);
 		stage.setScene(startNewGame);
-		Game1 g=new Game1(stage,data);
+		//Game1 g=new Game1(stage,data);
+		//temporarily disabled load saved game
+		Game g=new Game(stage);
 		try {
 
 			g.displayGameWindow();
@@ -93,7 +95,6 @@ public static void loadGame(){
 }
 public static void bStartMenu()
 {
-	//Parent startMenuLayout =FXMLLoader.load(getClass().getResource("testfxml.fxml")); 
 	stage.setTitle("Color Switch!");
 	Button newGame = new Button("New Game");
 	Button existingGame=new Button("Resume Existing Game");

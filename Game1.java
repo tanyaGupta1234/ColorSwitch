@@ -1,4 +1,4 @@
-import javafx.animation.Animation;
+/*import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
@@ -147,7 +147,7 @@ public class Game1 {
 
         // Color switcher
         colorsw=new ImageView();
-        Image cs=new Image("file:Images/colorswitcher.png");
+        Image cs=new Image("Images/colorswitcher.png");
         colorsw.setImage(cs);
         colorsw.setX(300-7.5);
         colorsw.setFitHeight(30);
@@ -162,7 +162,7 @@ public class Game1 {
         for(Obstacle obstacle1:obstacles){
 
             ImageView iv = new ImageView();
-            Image image=new Image("file:Images/obstacle11.png");
+            Image image=new Image("Images/obstacle11.png");
             //obstacle1.setImage("file:Images/obstacle11.png");
             iv.setImage(image);
             iv.setX(xball-or);
@@ -275,7 +275,7 @@ public class Game1 {
         Scene scene = new Scene(appRoot);
         scene.setOnKeyPressed(key->{
                     KeyCode keyCode=key.getCode();
-                    if(keyCode.equals(keyCode.ENTER)){
+                    if(keyCode.equals(keyCode.CONTROL)){
                         ENTER_pressed=true;
                     }
                 }
@@ -283,7 +283,7 @@ public class Game1 {
 
         scene.setOnKeyReleased(key->{
                     KeyCode keyCode=key.getCode();
-                    if(keyCode.equals(keyCode.ENTER)){
+                    if(keyCode.equals(keyCode.CONTROL)){
                         ENTER_pressed=false;
                     }
                 }
@@ -330,4 +330,4 @@ public class Game1 {
     public static void main(String[] args) {
         launch(args);
     }
-}
+}*/
