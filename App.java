@@ -78,9 +78,9 @@ public static void loadGame(){
 		newGameLayout.getChildren().addAll(newG);
 		Scene startNewGame=new Scene(newGameLayout,300,250);
 		stage.setScene(startNewGame);
-		//Game1 g=new Game1(stage,data);
+		Game g=new Game(stage,data);
 		//temporarily disabled load saved game
-		Game g=new Game(stage);
+		//Game g=new Game(stage);
 		try {
 
 			g.displayGameWindow();
@@ -90,7 +90,7 @@ public static void loadGame(){
 
 	}
 	catch (Exception e) {
-		System.out.println("Couldn't load save data: " + e.getMessage());
+		e.printStackTrace();
 	}
 }
 public static void bStartMenu()

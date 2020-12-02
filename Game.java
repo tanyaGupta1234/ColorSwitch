@@ -100,6 +100,41 @@ public class Game {
        colorSwitcherIndex=0;
        obstacleIndex=0;
     }
+    
+    public Game(Stage s, SaveData data)
+    {
+        this.stage=s;
+        appRoot = new Pane();
+        gameRoot = new Pane();
+        uiRoot = new Pane();
+        ball=new Player(data.ballpos);
+        ball.currentColor=data.ballColor;
+        ball.setColor();
+        ball.score=data.score;
+        star1=data.star1;
+        colorSwitcherIndex=data.colorSwitcherIndex;
+        obstacleIndex=data.obstacleIndex;
+        int yCor =200;
+        for(int i=0;i<10;i++)
+        {
+        	obstacle.add(new Obstacle(yCor,"Images/obstacle11.png"));
+        	star.add(new Star(yCor+120));
+        	gameRoot.getChildren().add(obstacle.get(i).iv);
+        	if(i>=star1)gameRoot.getChildren().add(star.get(i).ivStar);
+        	
+        	if(i%2==0)
+        	{
+        		colorSwitcher.add(new ColorSwitcher(yCor-75));
+        		gameRoot.getChildren().add(colorSwitcher.get(i/2).colorsw);
+        	}
+        	yCor-=300;
+        }
+        colorSwitcherPos=colorSwitcher.get(colorSwitcherIndex).getPositionY();
+        starPos=star.get(star1).starPos;
+       
+       gameRoot.getChildren().addAll(ball.ballImage);
+       
+    }
     private void initContent() throws FileNotFoundException {
 
         // Top menu in game
@@ -113,7 +148,7 @@ public class Game {
         ycor.setFont(new javafx.scene.text.Font("Arial", 15));
 
         saveState.setOnAction(e->App.bStartMenu());
-        score=new Label("Score : 0");score.setTextFill(Color.web("#0076a3"));
+        score=new Label("Score : "+ball.score);score.setTextFill(Color.web("#0076a3"));
         score.setFont(new Font("Arial", 15));
         hbox.getChildren().addAll(pause,saveState,score,ycor);
         hbox.setLayoutY(0);
@@ -147,6 +182,48 @@ public class Game {
 
 
     }
+    public void displayGameWindow() throws FileNotFoundException 
+    {
+        initContent();
+
+        Scene scene = new Scene(appRoot);
+        scene.setOnKeyPressed(key->{
+                    KeyCode keyCode=key.getCode();
+                    if(keyCode.equals(keyCode.CONTROL)){
+                        ENTER_pressed=true;
+                    }
+                }
+        );
+
+        scene.setOnKeyReleased(key->
+        {
+                    KeyCode keyCode=key.getCode();
+                    if(keyCode.equals(keyCode.CONTROL))
+                    {
+                        ENTER_pressed=false;
+                    }
+        }
+        );
+        stage.setTitle("Color Switch!");
+        stage.setScene(scene);
+        stage.show();
+
+        AnimationTimer timer = new AnimationTimer() 
+        {
+            @Override
+            public void handle(long now) {
+                // Making ball move according to key input
+                update();
+
+
+            }
+        };
+        this.timer=timer;
+        pause.setOnAction(e->{paused =true;timer.stop();pauseWindow(timer);});
+       // saveState.setOnAction(e->App.bStartMenu());
+        saveState.setOnAction(e->savingGame());
+        timer.start();
+    }
 
     private void update() 
     {
@@ -166,6 +243,8 @@ public class Game {
             checkColorSwitcherTouched();
             checkObstacleTouched();
     }
+    
+    
     
     void checkStarTouched()
     {
@@ -283,46 +362,32 @@ public class Game {
         window.showAndWait();
 
     }
-    public void displayGameWindow() throws FileNotFoundException 
+   
+    public void savingGame()
     {
-        initContent();
 
-        Scene scene = new Scene(appRoot);
-        scene.setOnKeyPressed(key->{
-                    KeyCode keyCode=key.getCode();
-                    if(keyCode.equals(keyCode.CONTROL)){
-                        ENTER_pressed=true;
-                    }
-                }
-        );
+        SaveData data = new SaveData();
+        data.score = ball.score;
+        //data.stars = (ArrayList<Star>)star.clone();
+        //data.obstacles=(ArrayList<Obstacle>)obstacle.clone();
+        //data.colorSwitchers=(ArrayList<ColorSwitcher>)colorSwitcher.clone();
+        double pos=ball.ballImage.getTranslateY();
+        data.ballpos=pos;
+        data.ballColor=ball.currentColor;
+        System.out.println("ball color:"+data.ballColor);
+        data.star1=star1;
+        data.colorSwitcherIndex=colorSwitcherIndex;
+        data.obstacleIndex=obstacleIndex;
+        
+        try {
+            ResourceManager.save(data, "2.save");
 
-        scene.setOnKeyReleased(key->
-        {
-                    KeyCode keyCode=key.getCode();
-                    if(keyCode.equals(keyCode.CONTROL))
-                    {
-                        ENTER_pressed=false;
-                    }
         }
-        );
-        stage.setTitle("Color Switch!");
-        stage.setScene(scene);
-        stage.show();
-
-        AnimationTimer timer = new AnimationTimer() 
-        {
-            @Override
-            public void handle(long now) {
-                // Making ball move according to key input
-                update();
-
-
-            }
-        };
-        this.timer=timer;
-        pause.setOnAction(e->{paused =true;timer.stop();pauseWindow(timer);});
-        saveState.setOnAction(e->App.bStartMenu());
-        timer.start();
+        catch (Exception e) {
+            System.out.println("Couldn't save: " + e.getMessage());
+        }
+        timer.stop();
+        App.bStartMenu();
     }
 
     public static void main(String[] args) {
