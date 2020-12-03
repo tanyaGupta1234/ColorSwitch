@@ -14,7 +14,7 @@ import java.io.FileNotFoundException;
 public  class GameComponent  {
 
 
-    private double positionY;
+    public double positionY;
     private Image image;
     public GameComponent(double y){
         positionY=y;

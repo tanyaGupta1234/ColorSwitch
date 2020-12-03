@@ -49,6 +49,9 @@ public class Game {
     private double or=90.5;
     private double ir=63.5;
     private double thickness=or-ir;
+    private double bigor=127.5;
+    private double bigir=89;
+    private double bigthickness=bigor-bigir;
     private Pane appRoot ;
     private Pane gameRoot ;
     private Pane uiRoot ;
@@ -115,7 +118,16 @@ public class Game {
         colorSwitcherIndex=data.colorSwitcherIndex;
         obstacleIndex=data.obstacleIndex;
         int yCor =200;
-        for(int i=0;i<10;i++)
+
+        //TODO  : check why not adding
+        obstacle.add(new Obstacle(yCor,"Images/obstacle11.png","Images/obstacle21.png"));
+        gameRoot.getChildren().add(obstacle.get(0).iv);
+        gameRoot.getChildren().add(obstacle.get(0).iv2);
+
+
+
+        yCor-=300;
+        for(int i=1;i<10;i++)
         {
         	obstacle.add(new Obstacle(yCor,"Images/obstacle11.png"));
         	star.add(new Star(yCor+120));
@@ -129,6 +141,7 @@ public class Game {
         	}
         	yCor-=300;
         }
+
         colorSwitcherPos=colorSwitcher.get(colorSwitcherIndex).getPositionY();
         starPos=star.get(star1).starPos;
        

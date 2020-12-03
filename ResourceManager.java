@@ -10,6 +10,10 @@ public class ResourceManager {
     public static void save(Serializable data, String fileName) throws Exception {
         try (ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(Paths.get(fileName)))) {
             oos.writeObject(data);
+
+        }
+        catch (Exception e){
+            System.out.println(e);
         }
     }
 
