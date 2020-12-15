@@ -12,9 +12,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+
 import java.io.File;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -49,6 +52,7 @@ public class Game {
     Stage stage;
     private HashMap<KeyCode, Boolean> keys = new HashMap<KeyCode, Boolean>();
     private HashMap<String,Integer> colorCode=new HashMap<>();
+    String name;
 
 
     private double or=90.5;
@@ -90,14 +94,19 @@ public class Game {
         ball=new Player(800);
         maxscore=readLong("score",0);
 
-        String musicFile = "Sound/soundgame.mp3";
+        String musicFile = "soundgame.mp3";
         Media sound = new Media(new File(musicFile).toURI().toString());
+       
         MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.setOnEndOfMedia(new Runnable() {
+      /*  mediaPlayer.setOnEndOfMedia(new Runnable() {
             public void run() {
                 mediaPlayer.seek(Duration.ZERO);
+                //mediaPlayer.play();
             }
-        });
+        }); */
+        MediaView mediaView = new MediaView(mediaPlayer);
+        //mediaPlayer.setAutoPlay(true); 
+        gameRoot.getChildren().add(mediaView);
         mediaPlayer.play();
 
 
@@ -320,10 +329,10 @@ public class Game {
              gameRoot.getChildren().remove(star.get(star1).ivStar);
              star1++;
              ball.score++;
-             String musicFile2 = "Sound/starsound.mp3";     // For example
+             String musicFile2 = "starsound.mp3";     // For example
              Media sound1 = new Media(new File(musicFile2).toURI().toString());
              starsound = new MediaPlayer(sound1);
-             starsound.play();
+             starsound.play();   
              if(ball.score>highscoregame){
                  highscoregame= ball.score;
              }
@@ -492,7 +501,7 @@ public class Game {
         });
         Label l=new Label();
         Button q=new Button("Quit");
-        q.setOnAction(e->{ App.bStartMenu(); window.close();});
+        q.setOnAction(e->{ gameRoot.getChildren().clear(); App.bStartMenu(); window.close();});
         VBox pauseLayout=new VBox();
         if(ball.score==0) { l.setText("You lost!!!");pauseLayout.getChildren().addAll(l,q,t1,t2);}
         else {l.setText("Resume or Quit!"); pauseLayout.getChildren().addAll(l,b,q,t1,t2);}
@@ -518,6 +527,17 @@ public class Game {
    
     public void savingGame()
     {
+    	//saveGame name window
+    	Stage window=new Stage();
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setTitle("Enter game name");
+        window.setMinWidth(250);
+        TextField input= new TextField();
+        javafx.scene.control.Button b=new Button("Okay");
+        b.setOnAction(e->{name=input.getText(); window.close();});
+        VBox pauseLayout=new VBox(); pauseLayout.getChildren().addAll(input,b);
+        window.setScene(new Scene(pauseLayout,100,100));
+       
 
         SaveData data = new SaveData();
         data.score = ball.score;
@@ -531,15 +551,19 @@ public class Game {
         data.star1=star1;
         data.colorSwitcherIndex=colorSwitcherIndex;
         data.obstacleIndex=obstacleIndex;
+        timer.stop();
+        window.showAndWait();
         
         try {
-            ResourceManager.save(data, "2.save");
+            //ResourceManager.save(data, "2.save");
+        	ResourceManager.save(data, name+".save");
+        	App.choicebox.getItems().add(name);
 
         }
         catch (Exception e) {
             System.out.println("Couldn't save: " + e.getMessage());
         }
-        timer.stop();
+        
         App.bStartMenu();
     }
 
