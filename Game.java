@@ -127,9 +127,8 @@ public class Game {
         star1=data.star1;
         colorSwitcherIndex=data.colorSwitcherIndex;
         obstacleIndex=data.obstacleIndex;
-        int yCor =200;
         
-        for(int i=1;i<10;i++)
+   /*     for(int i=1;i<10;i++)
         {
         	obstacle.add(new Obstacle(yCor,"Images/obstacle11.png"));
         	star.add(new Star(yCor+120));
@@ -137,6 +136,34 @@ public class Game {
         	
         	
         	if(i>=star1)gameRoot.getChildren().add(star.get(i).ivStar);
+        	
+        	if(i%2==0)
+        	{
+        		colorSwitcher.add(new ColorSwitcher(yCor-75));
+        		gameRoot.getChildren().add(colorSwitcher.get(i/2).colorsw);
+        	}
+        	yCor-=300;
+        } */
+        
+        int yCor =200;
+        for(int i=0;i<10;i++)
+        {
+        	if(i%2==0)
+        	{
+        	obstacle.add(new Obstacle(yCor,"Images/obstacle11.png"));
+        	//obstacle.add(new Obstacle(yCor,"Images/obs2.JPG"));
+        	star.add(new Star(yCor+120));
+        	gameRoot.getChildren().add(obstacle.get(i).iv);
+        	if(i>=star1)gameRoot.getChildren().add(star.get(i).ivStar);
+        	}
+        	else
+        	{
+        		obstacle.add(new Obstacle(yCor,"Images/windmill.JPG",100));
+        		gameRoot.getChildren().add(obstacle.get(i).iv);
+        		star.add(new Star(yCor+120));
+        		//gameRoot.getChildren().add(star.get(i).ivStar);
+        		if(i>=star1)gameRoot.getChildren().add(star.get(i).ivStar);
+        	}
         	
         	if(i%2==0)
         	{
