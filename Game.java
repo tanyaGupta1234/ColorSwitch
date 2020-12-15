@@ -293,7 +293,7 @@ public class Game {
        
         int presentBottomColor=1+(int)(r%4);
         int presentTopColor=1+(presentBottomColor+1)%4;
-        System.out.println("Present bottom col:"+presentBottomColor);
+        System.out.println("Present bottom col:"+presentBottomColor+"index:"+obstacleIndex);
         double ballTopPosition=ball.ballImage.getTranslateY()-ballRadius;
         double ballBottomPosition=ball.ballImage.getTranslateY()+ballRadius;
 
@@ -362,8 +362,8 @@ public class Game {
                     obstacleHitWindow(timer);
         		}
         	}
-        	if((ballBottomPosition>=obstacle.get(obstacleIndex).iv.getY()+2*or-thickness &&ballBottomPosition<=obstacle.get(obstacleIndex).iv.getY()+2*or) ||
-                    (ballTopPosition>=obstacle.get(obstacleIndex).iv.getY()+2*or-thickness &&ballTopPosition<=obstacle.get(obstacleIndex).iv.getY()+2*or))
+        	if((ballBottomPosition>=obstacle.get(obstacleIndex).iv.getY() &&ballBottomPosition<=obstacle.get(obstacleIndex).iv.getY()+thickness) ||
+                    (ballTopPosition>=obstacle.get(obstacleIndex).iv.getY() &&ballTopPosition<=obstacle.get(obstacleIndex).iv.getY()+thickness))
         	
         	obstacleIndex++;
         }
