@@ -49,9 +49,6 @@ public class Game {
     private double or=90.5;
     private double ir=63.5;
     private double thickness=or-ir;
-    private double bigor=127.5;
-    private double bigir=89;
-    private double bigthickness=bigor-bigir;
     private Pane appRoot ;
     private Pane gameRoot ;
     private Pane uiRoot ;
@@ -74,6 +71,7 @@ public class Game {
     ArrayList<Star> star=new ArrayList<>();
     ArrayList<ColorSwitcher> colorSwitcher=new ArrayList<>();
     AnimationTimer timer;
+    int currentObstacle=0;
     public Game(Stage s)
     {
         this.stage=s;
@@ -85,10 +83,21 @@ public class Game {
         int yCor =200;
         for(int i=0;i<10;i++)
         {
+        	if(i%2==0)
+        	{
         	obstacle.add(new Obstacle(yCor,"Images/obstacle11.png"));
+        	//obstacle.add(new Obstacle(yCor,"Images/obs2.JPG"));
         	star.add(new Star(yCor+120));
         	gameRoot.getChildren().add(obstacle.get(i).iv);
         	gameRoot.getChildren().add(star.get(i).ivStar);
+        	}
+        	else
+        	{
+        		obstacle.add(new Obstacle(yCor,"Images/windmill.JPG",100));
+        		gameRoot.getChildren().add(obstacle.get(i).iv);
+        		star.add(new Star(yCor+120));
+        		gameRoot.getChildren().add(star.get(i).ivStar);
+        	}
         	
         	if(i%2==0)
         	{
@@ -102,6 +111,7 @@ public class Game {
        star1=0;
        colorSwitcherIndex=0;
        obstacleIndex=0;
+       
     }
     
     public Game(Stage s, SaveData data)
@@ -118,20 +128,14 @@ public class Game {
         colorSwitcherIndex=data.colorSwitcherIndex;
         obstacleIndex=data.obstacleIndex;
         int yCor =200;
-
-        //TODO  : check why not adding
-        obstacle.add(new Obstacle(yCor,"Images/obstacle11.png","Images/obstacle21.png"));
-        gameRoot.getChildren().add(obstacle.get(0).iv);
-        gameRoot.getChildren().add(obstacle.get(0).iv2);
-
-
-
-        yCor-=300;
+        
         for(int i=1;i<10;i++)
         {
         	obstacle.add(new Obstacle(yCor,"Images/obstacle11.png"));
         	star.add(new Star(yCor+120));
-        	gameRoot.getChildren().add(obstacle.get(i).iv);
+        	gameRoot.getChildren().add(obstacle.get(i).iv); 
+        	
+        	
         	if(i>=star1)gameRoot.getChildren().add(star.get(i).ivStar);
         	
         	if(i%2==0)
@@ -141,7 +145,6 @@ public class Game {
         	}
         	yCor-=300;
         }
-
         colorSwitcherPos=colorSwitcher.get(colorSwitcherIndex).getPositionY();
         starPos=star.get(star1).starPos;
        
@@ -275,6 +278,7 @@ public class Game {
     {
     	 if(ball.ballImage.getTranslateY()>=colorSwitcherPos && ball.ballImage.getTranslateY()<=colorSwitcherPos+50)
     	 {
+    		 gameRoot.getChildren().remove(colorSwitcher.get(colorSwitcherIndex).colorsw);
     		 ball.changeColor();
              colorSwitcherIndex++;
              colorSwitcherPos=100000;
@@ -293,8 +297,10 @@ public class Game {
         double ballTopPosition=ball.ballImage.getTranslateY()-ballRadius;
         double ballBottomPosition=ball.ballImage.getTranslateY()+ballRadius;
 
-        // if ball is in top part of obstacle
-
+        
+        if(obstacleIndex%2==0)   //current obstacle is ring
+        {
+        	// if ball is in top part of obstacle
         if((ballBottomPosition>=obstacle.get(obstacleIndex).iv.getY() &&ballBottomPosition<=obstacle.get(obstacleIndex).iv.getY()+thickness) ||
                 (ballTopPosition>=obstacle.get(obstacleIndex).iv.getY() &&ballTopPosition<=obstacle.get(obstacleIndex).iv.getY()+thickness))
         
@@ -333,6 +339,34 @@ public class Game {
             System.out.println("passing");
         }
     }
+        }
+        else
+        {
+        	int currentWindmillColor=1+(int)(r%4);
+        	String col="";
+        	if(currentWindmillColor==1) col="purple";
+        	else if(currentWindmillColor==2)	col="yellow";
+        	else if(currentWindmillColor==3)   col="blue";
+        	else if(currentWindmillColor==4)   col="pink";
+        	System.out.println(Math.abs(ball.ballImage.getTranslateY()-60-obstacle.get(obstacleIndex).iv.getY())+"wind color: "+col+"player:"+ball.getColor()); 
+        	if(Math.abs(ball.ballImage.getTranslateY()-60-obstacle.get(obstacleIndex).iv.getY())<20)
+        	{
+        		if(currentWindmillColor==ball.getColor())
+        		{
+        			System.out.println("passing");
+        		}
+        		else
+        		{
+        			System.out.println("obstacle touched"+currentWindmillColor+" "+"ball"+ball.getColor());
+        			timer.stop();
+                    obstacleHitWindow(timer);
+        		}
+        	}
+        	if((ballBottomPosition>=obstacle.get(obstacleIndex).iv.getY()+2*or-thickness &&ballBottomPosition<=obstacle.get(obstacleIndex).iv.getY()+2*or) ||
+                    (ballTopPosition>=obstacle.get(obstacleIndex).iv.getY()+2*or-thickness &&ballTopPosition<=obstacle.get(obstacleIndex).iv.getY()+2*or))
+        	
+        	obstacleIndex++;
+        }
     	
     }
     
@@ -347,6 +381,7 @@ public class Game {
         { 
         	 ball.score--;score.setText("Score: "+ball.score);
         	 ball.ballImage.setTranslateY(ball.ballImage.getTranslateY()-40);
+        	 obstacleIndex++;
         	timer.start(); 
         	window.close();
         });
