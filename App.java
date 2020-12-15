@@ -55,7 +55,7 @@ public static void bSavedGames()
 	 Label savedG=new Label("Saved Games");
 	 //dummy entries
 	 choicebox.setMinHeight(50);choicebox.setMinWidth(100);choicebox.setPrefWidth(100);
-	 choicebox.getItems().add("Game 1"); choicebox.getItems().add("Game 2");
+	// choicebox.getItems().add("Game 1"); choicebox.getItems().add("Game 2");
 	//button formating
 		goBack.setMinWidth(300);goBack.setMinHeight(50);savedG.setMinWidth(300);savedG.setMinHeight(50);
 		goBack.setStyle("-fx-font-size: 2em;");
@@ -66,6 +66,7 @@ public static void bSavedGames()
 	 savedGameLayout.setStyle("-fx-background-color: #000000;");
 	 savedGameLayout.getChildren().addAll(savedG,choicebox,goBack);
 	 Scene savedGames= new Scene(savedGameLayout,600,600);
+	 choicebox.getSelectionModel().selectedItemProperty().addListener((v,oldValue,newValue)->loadGame(newValue+".save"));
 	 stage.setScene(savedGames);
 	 goBack.setOnAction(e->{bStartMenu();});
 }
@@ -112,8 +113,8 @@ public static void bStartMenu()
     Scene startMenu=new Scene(startMenuLayout,600,600,Color.RED);
     stage.setScene(startMenu);
     newGame.setOnAction(e->{bNewGame();});
-    //existingGame.setOnAction(e->{bSavedGames();});
-	existingGame.setOnAction(e->{loadGame("2.save");});
+    existingGame.setOnAction(e->{bSavedGames();});
+	//existingGame.setOnAction(e->{loadGame("game1.save");});
 	exit.setOnAction(e->{stage.close();});
 }
 

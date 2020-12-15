@@ -25,7 +25,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.awt.*;
+import javafx.scene.control.TextField;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.HashMap;
@@ -40,10 +40,11 @@ import static javafx.application.Application.launch;
 // start height 149px
 public class Game {
 
-   
+    
     Stage stage;
     private HashMap<KeyCode, Boolean> keys = new HashMap<KeyCode, Boolean>();
     private HashMap<String,Integer> colorCode=new HashMap<>();
+    String name;
 
 
     private double or=90.5;
@@ -75,6 +76,7 @@ public class Game {
     int currentObstacle=0;
     public Game(Stage s)
     {
+    	
         this.stage=s;
         appRoot = new Pane();
         gameRoot = new Pane();
@@ -118,6 +120,7 @@ public class Game {
     
     public Game(Stage s, SaveData data)
     {
+    	
         this.stage=s;
         appRoot = new Pane();
         gameRoot = new Pane();
@@ -442,6 +445,18 @@ public class Game {
    
     public void savingGame()
     {
+    	
+    	//saveGame name window
+    	Stage window=new Stage();
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setTitle("Enter game name");
+        window.setMinWidth(250);
+        TextField input= new TextField();
+        javafx.scene.control.Button b=new Button("Okay");
+        b.setOnAction(e->{name=input.getText(); window.close();});
+        VBox pauseLayout=new VBox(); pauseLayout.getChildren().addAll(input,b);
+        window.setScene(new Scene(pauseLayout,100,100));
+       
 
         SaveData data = new SaveData();
         data.score = ball.score;
@@ -455,15 +470,19 @@ public class Game {
         data.star1=star1;
         data.colorSwitcherIndex=colorSwitcherIndex;
         data.obstacleIndex=obstacleIndex;
+        timer.stop();
+        window.showAndWait();
         
         try {
-            ResourceManager.save(data, "2.save");
+            //ResourceManager.save(data, "2.save");
+        	ResourceManager.save(data, name+".save");
+        	App.choicebox.getItems().add(name);
 
         }
         catch (Exception e) {
             System.out.println("Couldn't save: " + e.getMessage());
         }
-        timer.stop();
+        
         App.bStartMenu();
     }
 
