@@ -70,9 +70,9 @@ public static void bSavedGames()
 	 goBack.setOnAction(e->{bStartMenu();});
 }
 
-public static void loadGame(){
+public static void loadGame(String filename){
 	try {
-		SaveData data = (SaveData) ResourceManager.load("2.save");
+		SaveData data = (SaveData) ResourceManager.load(filename);
 		VBox newGameLayout = new VBox(20);
 		Label newG=new Label("NEW GAME!!!");
 		newGameLayout.getChildren().addAll(newG);
@@ -113,7 +113,7 @@ public static void bStartMenu()
     stage.setScene(startMenu);
     newGame.setOnAction(e->{bNewGame();});
     //existingGame.setOnAction(e->{bSavedGames();});
-	existingGame.setOnAction(e->{loadGame();});
+	existingGame.setOnAction(e->{loadGame("2.save");});
 	exit.setOnAction(e->{stage.close();});
 }
 

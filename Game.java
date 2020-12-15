@@ -52,7 +52,8 @@ public class Game {
     private Pane appRoot ;
     private Pane gameRoot ;
     private Pane uiRoot ;
-    private double starPos=300-or+50;   //star height
+    //private double starPos=300-or+50;   //star height
+    private double starPos=300-or+50;
     private double colorSwitcherPos;
     private long timeStart;
     private double ballRadius=15;
@@ -80,7 +81,7 @@ public class Game {
         uiRoot = new Pane();
         ball=new Player(800);   
         
-        int yCor =200;
+        int yCor =300;
         for(int i=0;i<10;i++)
         {
         	if(i%2==0)
@@ -107,6 +108,7 @@ public class Game {
         	yCor-=300;
         }
        colorSwitcherPos=colorSwitcher.get(0).getPositionY();
+       starPos=star.get(0).starPos;
        gameRoot.getChildren().addAll(ball.ballImage);
        star1=0;
        colorSwitcherIndex=0;
@@ -145,7 +147,7 @@ public class Game {
         	yCor-=300;
         } */
         
-        int yCor =200;
+        int yCor =300;
         for(int i=0;i<10;i++)
         {
         	if(i%2==0)

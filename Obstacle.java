@@ -43,7 +43,7 @@ public Obstacle(double y,String imgSource, int x )
         }
         catch(Exception e) {System.out.println("obstacle image not set");}
         iv.setImage(getImage());
-        iv.setX(xball-or-70);
+        iv.setX(xball-or-85);
         iv.setY(y);
         
         RotateTransition rt = new RotateTransition(Duration.millis(4000), iv);  // in 4s 1 rotation done
