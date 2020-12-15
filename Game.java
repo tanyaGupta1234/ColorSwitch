@@ -21,15 +21,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.awt.*;
-import java.io.*;
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -75,8 +72,6 @@ public class Game {
     ArrayList<ColorSwitcher> colorSwitcher=new ArrayList<>();
     AnimationTimer timer;
     int currentObstacle=0;
-    long highscoregame=0;
-    long maxscore=0;
     public Game(Stage s)
     {
         this.stage=s;
@@ -84,7 +79,7 @@ public class Game {
         gameRoot = new Pane();
         uiRoot = new Pane();
         ball=new Player(800);   
-        maxscore=readLong("score",0);
+        
         int yCor =200;
         for(int i=0;i<10;i++)
         {
@@ -261,11 +256,7 @@ public class Game {
             @Override
             public void handle(long now) {
                 // Making ball move according to key input
-                try {
-                    update();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                update();
 
 
             }
@@ -277,7 +268,8 @@ public class Game {
         timer.start();
     }
 
-    private void update() throws IOException {
+    private void update() 
+    {
 
             // Changing position of ball
             double speed=0;
@@ -303,9 +295,6 @@ public class Game {
              gameRoot.getChildren().remove(star.get(star1).ivStar);
              star1++;
              ball.score++;
-             if(ball.score>highscoregame){
-                 highscoregame= ball.score;
-             }
              score.setText("Score: "+ball.score);
              starPos=100000;
              if(star1<star.size()) starPos=star.get(star1).starPos;
@@ -324,7 +313,8 @@ public class Game {
          }
     }
     
-    void checkObstacleTouched() throws IOException {
+    void checkObstacleTouched()
+    {
     	long elapsedTime=System.currentTimeMillis()-timeStart;
         long r=elapsedTime/1000;    // number of quarter rotations completed
        
@@ -406,76 +396,28 @@ public class Game {
         }
     	
     }
-    public static void writeLong(String filename, long number) throws IOException {
-        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(filename))) {
-            dos.writeLong(number);
-        }
-    }
-
-    public static long readLong(String filename, long valueIfNotFound) {
-        if (!new File(filename).canRead()) return valueIfNotFound;
-        try (DataInputStream dis = new DataInputStream(new FileInputStream(filename))) {
-            return dis.readLong();
-        } catch (IOException ignored) {
-            return valueIfNotFound;
-        }
-    }
-
-    public Text textHeading(String data,int x,int y){
-        //Creating a Text object
-        Text text = new Text(data);
-
-        //Setting font to the text
-        text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 50));
-
-//        //setting the position of the text
-//        text.setX(x);
-//        text.setY(y);
-
-        //Setting the color
-        text.setFill(Color.BROWN);
-
-        //Setting the Stroke
-        text.setStrokeWidth(2);
-
-        // Setting the stroke color
-        text.setStroke(Color.BLUE);
-
-        //Setting the text to be added.
-        text.setText(data);
-        return  text;
-    }
-    public void obstacleHitWindow(AnimationTimer timer) throws IOException {
-
+    
+    public void obstacleHitWindow(AnimationTimer timer)
+    {
     	Stage window=new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("OOPS!!!");
         window.setMinWidth(250);
-        Text t1=new Text();
-        Text t2=new Text();
-        if(highscoregame>maxscore){
-            window.setMinWidth(1000);
-            window.setMinHeight(500);
-            System.out.println("congo"+maxscore+" "+highscoregame);
-            t1=textHeading("CONGRATULATIONS !! NEW RECORD SET BY YOU",10,10);
-            t2=textHeading(String.valueOf(highscoregame),100,50);
-            writeLong("score",highscoregame);
-        }
         Button b=new Button("Resume game");
         b.setOnAction(e->
-        {
+        { 
         	 ball.score--;score.setText("Score: "+ball.score);
         	 ball.ballImage.setTranslateY(ball.ballImage.getTranslateY()-40);
         	 obstacleIndex++;
-        	timer.start();
+        	timer.start(); 
         	window.close();
         });
         Label l=new Label();
         Button q=new Button("Quit");
         q.setOnAction(e->{ App.bStartMenu(); window.close();});
-        VBox pauseLayout=new VBox();
-        if(ball.score==0) { l.setText("You lost!!!");pauseLayout.getChildren().addAll(l,q,t1,t2);}
-        else {l.setText("Resume or Quit!"); pauseLayout.getChildren().addAll(l,b,q,t1,t2);}
+        VBox pauseLayout=new VBox(); 
+        if(ball.score==0) { l.setText("You lost!!!");pauseLayout.getChildren().addAll(l,q);}
+        else {l.setText("Resume or Quit!"); pauseLayout.getChildren().addAll(l,b,q);}
         window.setScene(new Scene(pauseLayout,200,200));
         window.show();
     	
