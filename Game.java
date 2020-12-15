@@ -13,6 +13,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import java.io.File;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -77,7 +80,7 @@ public class Game {
 
     long highscoregame=0;
     long maxscore=0;
-
+    MediaPlayer starsound;
     public Game(Stage s)
     {
         this.stage=s;
@@ -86,6 +89,19 @@ public class Game {
         uiRoot = new Pane();
         ball=new Player(800);
         maxscore=readLong("score",0);
+
+        String musicFile = "Sound/soundgame.mp3";
+        Media sound = new Media(new File(musicFile).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.setOnEndOfMedia(new Runnable() {
+            public void run() {
+                mediaPlayer.seek(Duration.ZERO);
+            }
+        });
+        mediaPlayer.play();
+
+
+
         int yCor =200;
         for(int i=0;i<10;i++)
         {
@@ -304,6 +320,10 @@ public class Game {
              gameRoot.getChildren().remove(star.get(star1).ivStar);
              star1++;
              ball.score++;
+             String musicFile2 = "Sound/starsound.mp3";     // For example
+             Media sound1 = new Media(new File(musicFile2).toURI().toString());
+             starsound = new MediaPlayer(sound1);
+             starsound.play();
              if(ball.score>highscoregame){
                  highscoregame= ball.score;
              }
