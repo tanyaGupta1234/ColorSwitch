@@ -13,6 +13,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import java.io.File;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -24,9 +27,11 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import javafx.scene.control.TextField;
-import java.io.FileNotFoundException;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import java.awt.*;
+import java.io.*;
 import java.util.*;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,11 +45,10 @@ import static javafx.application.Application.launch;
 // start height 149px
 public class Game {
 
-    
+   
     Stage stage;
     private HashMap<KeyCode, Boolean> keys = new HashMap<KeyCode, Boolean>();
     private HashMap<String,Integer> colorCode=new HashMap<>();
-    String name;
 
 
     private double or=90.5;
@@ -53,8 +57,7 @@ public class Game {
     private Pane appRoot ;
     private Pane gameRoot ;
     private Pane uiRoot ;
-    //private double starPos=300-or+50;   //star height
-    private double starPos=300-or+50;
+    private double starPos=300-or+50;   //star height
     private double colorSwitcherPos;
     private long timeStart;
     private double ballRadius=15;
@@ -74,16 +77,32 @@ public class Game {
     ArrayList<ColorSwitcher> colorSwitcher=new ArrayList<>();
     AnimationTimer timer;
     int currentObstacle=0;
+
+    long highscoregame=0;
+    long maxscore=0;
+    MediaPlayer starsound;
     public Game(Stage s)
     {
-    	
         this.stage=s;
         appRoot = new Pane();
         gameRoot = new Pane();
         uiRoot = new Pane();
-        ball=new Player(800);   
-        
-        int yCor =300;
+        ball=new Player(800);
+        maxscore=readLong("score",0);
+
+        String musicFile = "Sound/soundgame.mp3";
+        Media sound = new Media(new File(musicFile).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.setOnEndOfMedia(new Runnable() {
+            public void run() {
+                mediaPlayer.seek(Duration.ZERO);
+            }
+        });
+        mediaPlayer.play();
+
+
+
+        int yCor =200;
         for(int i=0;i<10;i++)
         {
         	if(i%2==0)
@@ -110,7 +129,6 @@ public class Game {
         	yCor-=300;
         }
        colorSwitcherPos=colorSwitcher.get(0).getPositionY();
-       starPos=star.get(0).starPos;
        gameRoot.getChildren().addAll(ball.ballImage);
        star1=0;
        colorSwitcherIndex=0;
@@ -120,7 +138,6 @@ public class Game {
     
     public Game(Stage s, SaveData data)
     {
-    	
         this.stage=s;
         appRoot = new Pane();
         gameRoot = new Pane();
@@ -150,7 +167,7 @@ public class Game {
         	yCor-=300;
         } */
         
-        int yCor =300;
+        int yCor =200;
         for(int i=0;i<10;i++)
         {
         	if(i%2==0)
@@ -261,7 +278,11 @@ public class Game {
             @Override
             public void handle(long now) {
                 // Making ball move according to key input
-                update();
+                try {
+                    update();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
 
             }
@@ -273,8 +294,7 @@ public class Game {
         timer.start();
     }
 
-    private void update() 
-    {
+    private void update() throws IOException {
 
             // Changing position of ball
             double speed=0;
@@ -300,6 +320,13 @@ public class Game {
              gameRoot.getChildren().remove(star.get(star1).ivStar);
              star1++;
              ball.score++;
+             String musicFile2 = "Sound/starsound.mp3";     // For example
+             Media sound1 = new Media(new File(musicFile2).toURI().toString());
+             starsound = new MediaPlayer(sound1);
+             starsound.play();
+             if(ball.score>highscoregame){
+                 highscoregame= ball.score;
+             }
              score.setText("Score: "+ball.score);
              starPos=100000;
              if(star1<star.size()) starPos=star.get(star1).starPos;
@@ -318,8 +345,7 @@ public class Game {
          }
     }
     
-    void checkObstacleTouched()
-    {
+    void checkObstacleTouched() throws IOException {
     	long elapsedTime=System.currentTimeMillis()-timeStart;
         long r=elapsedTime/1000;    // number of quarter rotations completed
        
@@ -401,13 +427,60 @@ public class Game {
         }
     	
     }
-    
-    public void obstacleHitWindow(AnimationTimer timer)
-    {
+    public static void writeLong(String filename, long number) throws IOException {
+        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(filename))) {
+            dos.writeLong(number);
+        }
+    }
+
+    public static long readLong(String filename, long valueIfNotFound) {
+        if (!new File(filename).canRead()) return valueIfNotFound;
+        try (DataInputStream dis = new DataInputStream(new FileInputStream(filename))) {
+            return dis.readLong();
+        } catch (IOException ignored) {
+            return valueIfNotFound;
+        }
+    }
+
+    public Text textHeading(String data,int x,int y){
+        //Creating a Text object
+        Text text = new Text(data);
+
+        //Setting font to the text
+        text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 50));
+
+//        //setting the position of the text
+//        text.setX(x);
+//        text.setY(y);
+
+        //Setting the color
+        text.setFill(Color.BROWN);
+
+        //Setting the Stroke
+        text.setStrokeWidth(2);
+
+        // Setting the stroke color
+        text.setStroke(Color.BLUE);
+
+        //Setting the text to be added.
+        text.setText(data);
+        return  text;
+    }
+    public void obstacleHitWindow(AnimationTimer timer) throws IOException {
     	Stage window=new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("OOPS!!!");
         window.setMinWidth(250);
+        Text t1=new Text();
+        Text t2=new Text();
+        if(highscoregame>maxscore){
+            window.setMinWidth(1000);
+            window.setMinHeight(500);
+            System.out.println("congo"+maxscore+" "+highscoregame);
+            t1=textHeading("CONGRATULATIONS !! NEW RECORD SET BY YOU",10,10);
+            t2=textHeading(String.valueOf(highscoregame),100,50);
+            writeLong("score",highscoregame);
+        }
         Button b=new Button("Resume game");
         b.setOnAction(e->
         { 
@@ -420,9 +493,9 @@ public class Game {
         Label l=new Label();
         Button q=new Button("Quit");
         q.setOnAction(e->{ App.bStartMenu(); window.close();});
-        VBox pauseLayout=new VBox(); 
-        if(ball.score==0) { l.setText("You lost!!!");pauseLayout.getChildren().addAll(l,q);}
-        else {l.setText("Resume or Quit!"); pauseLayout.getChildren().addAll(l,b,q);}
+        VBox pauseLayout=new VBox();
+        if(ball.score==0) { l.setText("You lost!!!");pauseLayout.getChildren().addAll(l,q,t1,t2);}
+        else {l.setText("Resume or Quit!"); pauseLayout.getChildren().addAll(l,b,q,t1,t2);}
         window.setScene(new Scene(pauseLayout,200,200));
         window.show();
     	
@@ -445,18 +518,6 @@ public class Game {
    
     public void savingGame()
     {
-    	
-    	//saveGame name window
-    	Stage window=new Stage();
-        window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("Enter game name");
-        window.setMinWidth(250);
-        TextField input= new TextField();
-        javafx.scene.control.Button b=new Button("Okay");
-        b.setOnAction(e->{name=input.getText(); window.close();});
-        VBox pauseLayout=new VBox(); pauseLayout.getChildren().addAll(input,b);
-        window.setScene(new Scene(pauseLayout,100,100));
-       
 
         SaveData data = new SaveData();
         data.score = ball.score;
@@ -470,19 +531,15 @@ public class Game {
         data.star1=star1;
         data.colorSwitcherIndex=colorSwitcherIndex;
         data.obstacleIndex=obstacleIndex;
-        timer.stop();
-        window.showAndWait();
         
         try {
-            //ResourceManager.save(data, "2.save");
-        	ResourceManager.save(data, name+".save");
-        	App.choicebox.getItems().add(name);
+            ResourceManager.save(data, "2.save");
 
         }
         catch (Exception e) {
             System.out.println("Couldn't save: " + e.getMessage());
         }
-        
+        timer.stop();
         App.bStartMenu();
     }
 
