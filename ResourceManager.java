@@ -14,7 +14,8 @@ public class ResourceManager {
     }
 
     public static Object load(String fileName) throws Exception {
-        try (ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(Paths.get(fileName)))) {
+        try (ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(Paths.get(fileName)))) 
+        {
             //ArrayList<Double> list = (ArrayList<Double>) ois.readObject();
             Object data=ois.readObject();
             System.out.println(data);
