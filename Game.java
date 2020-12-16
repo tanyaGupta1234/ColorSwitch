@@ -85,6 +85,7 @@ public class Game {
     long highscoregame=0;
     long maxscore=0;
     MediaPlayer starsound;
+    MediaPlayer mediaPlayer;
     public Game(Stage s)
     {
         this.stage=s;
@@ -97,22 +98,16 @@ public class Game {
         String musicFile = "soundgame.mp3";
         Media sound = new Media(new File(musicFile).toURI().toString());
        
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-      /*  mediaPlayer.setOnEndOfMedia(new Runnable() {
-            public void run() {
-                mediaPlayer.seek(Duration.ZERO);
-                //mediaPlayer.play();
-            }
-        }); */
+        mediaPlayer = new MediaPlayer(sound);
         MediaView mediaView = new MediaView(mediaPlayer);
-        //mediaPlayer.setAutoPlay(true); 
         gameRoot.getChildren().add(mediaView);
         mediaPlayer.play();
+        
 
-
+          
 
         int yCor =200;
-        for(int i=0;i<10;i++)
+        for(int i=0;i<6;i++)
         {
         	if(i%2==0)
         	{
@@ -137,6 +132,43 @@ public class Game {
         	}
         	yCor-=300;
         }
+        for(int i=6;i<12;i++)
+        {
+        	if(i%3==0)
+        	{
+        	obstacle.add(new Obstacle(yCor,"Images/obstacle11.png"));
+        	//obstacle.add(new Obstacle(yCor,"Images/obs2.JPG"));
+        	star.add(new Star(yCor+120));
+        	gameRoot.getChildren().add(obstacle.get(i).iv);
+        	gameRoot.getChildren().add(star.get(i).ivStar);
+        	}
+        	else if(i%3==1)
+        	{
+        		obstacle.add(new Obstacle(yCor,"Images/windmill.JPG",100));
+        		gameRoot.getChildren().add(obstacle.get(i).iv);
+        		star.add(new Star(yCor+120));
+        		gameRoot.getChildren().add(star.get(i).ivStar);
+        	}
+        	else
+        	{
+        		obstacle.add(new Obstacle(yCor,"Images/square.JPG"));
+        		gameRoot.getChildren().add(obstacle.get(i).iv);
+        		star.add(new Star(yCor+120));
+        		gameRoot.getChildren().add(star.get(i).ivStar);
+        	}
+        	
+        	
+        	if(i%2==0)
+        	{
+        		colorSwitcher.add(new ColorSwitcher(yCor-75));
+        		gameRoot.getChildren().add(colorSwitcher.get(i/2).colorsw);
+        	}
+        	yCor-=300;
+        }
+        
+   
+        
+        
        colorSwitcherPos=colorSwitcher.get(0).getPositionY();
        gameRoot.getChildren().addAll(ball.ballImage);
        star1=0;
@@ -177,7 +209,7 @@ public class Game {
         } */
         
         int yCor =200;
-        for(int i=0;i<10;i++)
+    /*    for(int i=0;i<10;i++)
         {
         	if(i%2==0)
         	{
@@ -199,7 +231,66 @@ public class Game {
         	if(i%2==0)
         	{
         		colorSwitcher.add(new ColorSwitcher(yCor-75));
-        		gameRoot.getChildren().add(colorSwitcher.get(i/2).colorsw);
+        		if(i/2>=colorSwitcherIndex)gameRoot.getChildren().add(colorSwitcher.get(i/2).colorsw);
+        	}
+        	yCor-=300;
+        }
+        */
+        for(int i=0;i<6;i++)
+        {
+        	if(i%2==0)
+        	{
+        	obstacle.add(new Obstacle(yCor,"Images/obstacle11.png"));
+        	//obstacle.add(new Obstacle(yCor,"Images/obs2.JPG"));
+        	star.add(new Star(yCor+120));
+        	gameRoot.getChildren().add(obstacle.get(i).iv);
+        	if(i>=star1)gameRoot.getChildren().add(star.get(i).ivStar);
+        	}
+        	else
+        	{
+        		obstacle.add(new Obstacle(yCor,"Images/windmill.JPG",100));
+        		gameRoot.getChildren().add(obstacle.get(i).iv);
+        		star.add(new Star(yCor+120));
+        		if(i>=star1)gameRoot.getChildren().add(star.get(i).ivStar);
+        	}
+        	
+        	if(i%2==0)
+        	{
+        		colorSwitcher.add(new ColorSwitcher(yCor-75));
+        		if(i/2>=colorSwitcherIndex)gameRoot.getChildren().add(colorSwitcher.get(i/2).colorsw);
+        	}
+        	yCor-=300;
+        }
+        for(int i=6;i<12;i++)
+        {
+        	if(i%3==0)
+        	{
+        	obstacle.add(new Obstacle(yCor,"Images/obstacle11.png"));
+        	//obstacle.add(new Obstacle(yCor,"Images/obs2.JPG"));
+        	star.add(new Star(yCor+120));
+        	gameRoot.getChildren().add(obstacle.get(i).iv);
+        	if(i>=star1)gameRoot.getChildren().add(star.get(i).ivStar);
+        	}
+        	else if(i%3==1)
+        	{
+        		obstacle.add(new Obstacle(yCor,"Images/windmill.JPG",100));
+        		gameRoot.getChildren().add(obstacle.get(i).iv);
+        		star.add(new Star(yCor+120));
+        		if(i>=star1)gameRoot.getChildren().add(star.get(i).ivStar);
+        	}
+        	else
+        	{
+        		obstacle.add(new Obstacle(yCor,"Images/square.JPG"));
+        		gameRoot.getChildren().add(obstacle.get(i).iv);
+        		star.add(new Star(yCor+120));
+        		if(i>=star1)gameRoot.getChildren().add(star.get(i).ivStar);
+        	}
+        	
+        	
+        	if(i%2==0)
+        	{
+        		colorSwitcher.add(new ColorSwitcher(yCor-75));
+        		if(i/2>=colorSwitcherIndex)gameRoot.getChildren().add(colorSwitcher.get(i/2).colorsw);
         	}
         	yCor-=300;
         }
@@ -355,6 +446,10 @@ public class Game {
     }
     
     void checkObstacleTouched() throws IOException {
+    	
+    	if(obstacleIndex>=8) {obstacleIndex++; return;}
+    	
+    	
     	long elapsedTime=System.currentTimeMillis()-timeStart;
         long r=elapsedTime/1000;    // number of quarter rotations completed
        
@@ -501,7 +596,7 @@ public class Game {
         });
         Label l=new Label();
         Button q=new Button("Quit");
-        q.setOnAction(e->{ gameRoot.getChildren().clear(); App.bStartMenu(); window.close();});
+        q.setOnAction(e->{this.timer.stop();mediaPlayer.stop(); App.bStartMenu(); window.close();});
         VBox pauseLayout=new VBox();
         if(ball.score==0) { l.setText("You lost!!!");pauseLayout.getChildren().addAll(l,q,t1,t2);}
         else {l.setText("Resume or Quit!"); pauseLayout.getChildren().addAll(l,b,q,t1,t2);}
