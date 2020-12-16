@@ -312,7 +312,7 @@ public class Game {
         javafx.scene.control.Label ycor=new javafx.scene.control.Label("");ycor.setTextFill(Color.web("#0076a3"));
         ycor.setFont(new javafx.scene.text.Font("Arial", 15));
 
-        saveState.setOnAction(e->App.bStartMenu());
+        //saveState.setOnAction(e->App.bStartMenu());
         score=new Label("Score : "+ball.score);score.setTextFill(Color.web("#0076a3"));
         score.setFont(new Font("Arial", 15));
         hbox.getChildren().addAll(pause,saveState,score,ycor);

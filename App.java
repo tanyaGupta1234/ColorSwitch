@@ -49,6 +49,21 @@ public static void  bNewGame()
 		catch(Exception e) {System.out.println("exceptionnnnnn");}
 	
 }
+public static void  bChristmasGame() 
+{
+	VBox newGameLayout = new VBox(20);
+	Label newG=new Label("NEW GAME!!!");
+	newGameLayout.getChildren().addAll(newG);
+	Scene startNewGame=new Scene(newGameLayout,300,250);
+	stage.setScene(startNewGame);
+	christmasGame g=new christmasGame(stage);
+	try {
+		
+	g.displayGameWindow();
+		} 
+		catch(Exception e) {System.out.println("exceptionnnnnn");}
+	
+}
 public static void bSavedGames() 
 {
 	 Button goBack=new Button("go back"); 
@@ -98,6 +113,7 @@ public static void bStartMenu()
 {
 	stage.setTitle("Color Switch!");
 	Button newGame = new Button("New Game");
+	Button christmasGame = new Button("New Christmas Game");
 	Button existingGame=new Button("Resume Existing Game");
 	Button exit=new Button("Exit");
 	Label myHeading=new Label("Color Switch"); 
@@ -105,14 +121,16 @@ public static void bStartMenu()
 	VBox startMenuLayout = new VBox(20); startMenuLayout.setSpacing(75);startMenuLayout.setStyle("-fx-background-color: #000000;");
 	//button formating
 	myHeading.setMinWidth(300);myHeading.setMinHeight(50);
-	exit.setMinWidth(300);newGame.setMinWidth(300);existingGame.setMinWidth(300);
-	exit.setMinHeight(50);newGame.setMinHeight(50);existingGame.setMinHeight(50);
+	exit.setMinWidth(300);newGame.setMinWidth(300);existingGame.setMinWidth(300);christmasGame.setMinWidth(300);
+	exit.setMinHeight(50);newGame.setMinHeight(50);existingGame.setMinHeight(50);christmasGame.setMinHeight(50);
 	exit.setStyle("-fx-font-size: 2em;");newGame.setStyle("-fx-font-size: 2em;");existingGame.setStyle("-fx-font-size: 2em;");
+	christmasGame.setStyle("-fx-font-size: 2em;");
     //button formating finish
-	startMenuLayout.getChildren().addAll(myHeading,newGame,existingGame,exit);startMenuLayout.setAlignment(Pos.CENTER);
+	startMenuLayout.getChildren().addAll(myHeading,newGame,christmasGame,existingGame,exit);startMenuLayout.setAlignment(Pos.CENTER);
     Scene startMenu=new Scene(startMenuLayout,600,600,Color.RED);
     stage.setScene(startMenu);
     newGame.setOnAction(e->{bNewGame();});
+    christmasGame.setOnAction(e->{bChristmasGame();});
     existingGame.setOnAction(e->{bSavedGames();});
 	//existingGame.setOnAction(e->{loadGame("game1.save");});
 	exit.setOnAction(e->{stage.close();});

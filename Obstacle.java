@@ -31,6 +31,7 @@ public class Obstacle  extends GameComponent
         rt.setInterpolator(Interpolator.LINEAR);
         rt.play();
         
+        
     }
 public Obstacle(double y,String imgSource, int x ) //for windmill
    
