@@ -190,6 +190,13 @@ public class Game {
         star1=data.star1;
         colorSwitcherIndex=data.colorSwitcherIndex;
         obstacleIndex=data.obstacleIndex;
+        String musicFile = "soundgame.mp3";
+        Media sound = new Media(new File(musicFile).toURI().toString());
+       
+        mediaPlayer = new MediaPlayer(sound);
+        MediaView mediaView = new MediaView(mediaPlayer);
+        gameRoot.getChildren().add(mediaView);
+        mediaPlayer.play();
         
    /*     for(int i=1;i<10;i++)
         {

@@ -27,7 +27,9 @@ public class Main extends Application{
     public void start(Stage primaryStage) throws Exception 
     {
     	
+    	
     	App app=new App(primaryStage);
+    	app.addSavedGamesToChoiceBox();
         app.bStartMenu();
         primaryStage.show();
         

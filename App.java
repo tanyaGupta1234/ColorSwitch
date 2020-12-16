@@ -29,11 +29,49 @@ public class App
 	{
 		stage=s;
 	}
-	void addSavedGame(Game g)
+	public static void addSavedGamesToChoiceBox()
 	{
-		savedGames.add(g);
-		choicebox.getItems().add("Game: "+(savedGames.size()+1));
+		try {
+			saveNames data = (saveNames) ResourceManager.load("listofgames.save");
+			if(data.len>=1)
+			{
+				choicebox.getItems().add(data.game1);
+			}
+			if(data.len>=2)
+			{
+				choicebox.getItems().add(data.game2);
+			}
+			if(data.len>=3)
+			{
+				choicebox.getItems().add(data.game3);
+			}
+		}
+		catch (Exception e) {
+			System.out.println("No saved games");
+		}
+		//savedGames.add(g);
+		//choicebox.getItems().add(gameName);
 	}
+	public static void saveGamesFromChoiceBox()
+	{
+		if(choicebox.getItems().isEmpty()) return;
+		
+		int len=choicebox.getItems().size();
+		System.out.println("length=="+len);
+		saveNames names=new saveNames();
+		if(len>=1) {names.game1=choicebox.getItems().get(0); names.len=1;}
+		if(len>=2) {names.game2=choicebox.getItems().get(1); names.len=2;}
+		if(len>=3) {names.game3=choicebox.getItems().get(2); names.len=3;}
+		try {
+            //ResourceManager.save(data, "2.save");
+        	ResourceManager.save(names, "listofgames.save");
+
+        }
+        catch (Exception e) {
+            System.out.println("Couldn't save: " + e.getMessage());
+        }
+	}
+
 public static void  bNewGame() 
 {
 	VBox newGameLayout = new VBox(20);
@@ -86,6 +124,7 @@ public static void bSavedGames()
 	 goBack.setOnAction(e->{bStartMenu();});
 }
 
+
 public static void loadGame(String filename){
 	try {
 		SaveData data = (SaveData) ResourceManager.load(filename);
@@ -108,6 +147,7 @@ public static void loadGame(String filename){
 	catch (Exception e) {
 		e.printStackTrace();
 	}
+	
 }
 public static void bStartMenu()
 {
@@ -133,7 +173,7 @@ public static void bStartMenu()
     christmasGame.setOnAction(e->{bChristmasGame();});
     existingGame.setOnAction(e->{bSavedGames();});
 	//existingGame.setOnAction(e->{loadGame("game1.save");});
-	exit.setOnAction(e->{stage.close();});
+	exit.setOnAction(e->{ saveGamesFromChoiceBox(); stage.close();});
 }
 
 
