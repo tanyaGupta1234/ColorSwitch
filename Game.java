@@ -315,14 +315,15 @@ public class Game {
         BackgroundFill background_fill = new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY);
         Background background = new Background(background_fill);
         hbox.setBackground(background);
-        pause=new Button("Pause"); saveState=new Button("Save Game State");
+        pause=new Button("Pause"); saveState=new Button("Save Game State");Button exit=new Button("Quit");
         javafx.scene.control.Label ycor=new javafx.scene.control.Label("");ycor.setTextFill(Color.web("#0076a3"));
         ycor.setFont(new javafx.scene.text.Font("Arial", 15));
+        exit.setOnAction(e->{ this.timer.stop();mediaPlayer.stop(); App.bStartMenu();});
 
         //saveState.setOnAction(e->App.bStartMenu());
         score=new Label("Score : "+ball.score);score.setTextFill(Color.web("#0076a3"));
         score.setFont(new Font("Arial", 15));
-        hbox.getChildren().addAll(pause,saveState,score,ycor);
+        hbox.getChildren().addAll(pause,saveState,exit,score,ycor);
         hbox.setLayoutY(0);
         uiRoot.getChildren().add(hbox);
 
@@ -593,6 +594,8 @@ public class Game {
             writeLong("score",highscoregame);
         }
         Button b=new Button("Resume game");
+        Button startNewGame=new Button("Start New game");
+        startNewGame.setOnAction(e->{this.timer.stop();mediaPlayer.stop();App.bNewGame();window.close();});
         b.setOnAction(e->
         { 
         	 ball.score--;score.setText("Score: "+ball.score);
@@ -605,8 +608,8 @@ public class Game {
         Button q=new Button("Quit");
         q.setOnAction(e->{this.timer.stop();mediaPlayer.stop(); App.bStartMenu(); window.close();});
         VBox pauseLayout=new VBox();
-        if(ball.score==0) { l.setText("You lost!!!");pauseLayout.getChildren().addAll(l,q,t1,t2);}
-        else {l.setText("Resume or Quit!"); pauseLayout.getChildren().addAll(l,b,q,t1,t2);}
+        if(ball.score==0) { l.setText("You lost!!!");pauseLayout.getChildren().addAll(l,q,startNewGame,t1,t2);}
+        else {l.setText("Resume or Quit!"); pauseLayout.getChildren().addAll(l,b,q,startNewGame,t1,t2);}
         window.setScene(new Scene(pauseLayout,200,200));
         window.show();
     	
