@@ -350,7 +350,7 @@ public class christmasGame {
     public void obstacleHitWindow(AnimationTimer timer)  {
     	Stage window=new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("OOPS!!!");
+        window.setTitle("Your Tree!");
         window.setMinWidth(250);
        
         Button q=new Button("Quit");
@@ -360,16 +360,24 @@ public class christmasGame {
         VBox pauseLayout=new VBox();
         Image image=null;
         iv = new ImageView();
+        Label l=new Label();
         if(star1==0)image=new Image("Images/tree_1.png");
         else if(star1==1)image=new Image("Images/tree2.png");
         else if(star1==2)image=new Image("Images/tree3.png");
         else if(star1==3)image=new Image("Images/tree4.png");
         else if(star1==4)image=new Image("Images/tree5.png");
         else if(star1==5)image=new Image("Images/tree6.png");
-        else image=new Image("Images/tree_5.png");
+        else
+        	{
+        	
+        	l=new Label("Merry Christmas!!!");
+        	l.setStyle("-fx-font-size: 5em;-fx-text-fill: #ff0000");
+        	image=new Image("Images/treefinal.jpg");
+        	
+        	}
         iv.setImage(image);
         iv.setFitHeight(400);iv.setFitWidth(400);
-        pauseLayout.getChildren().addAll(q,resume,iv);
+        pauseLayout.getChildren().addAll(q,resume,l,iv);
         window.setScene(new Scene(pauseLayout,600,600));
         window.show();
     	
